@@ -766,22 +766,254 @@
     color: var(--muted);
   }
 
+  .hamburger {
+    display: none;
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
   /* SVG icons inline */
   svg { display: block; }
 
+
+  /* ─── MOBILE BOTTOM NAV ─── */
+  .mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    z-index: 200;
+    padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+
+  .mobile-bottom-nav ul {
+    display: flex;
+    list-style: none;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .mobile-bottom-nav li a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .mobile-bottom-nav li a.active { color: var(--accent); }
+  .mobile-bottom-nav li a svg { width: 22px; height: 22px; }
+
+  .mobile-cart-badge {
+    position: absolute;
+    top: 0; right: 2px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── MOBILE MENU DRAWER ─── */
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .mobile-menu-overlay.open { opacity: 1; }
+
+  .mobile-drawer {
+    position: fixed;
+    top: 0; left: 0;
+    width: min(300px, 85vw);
+    height: 100%;
+    background: #fff;
+    z-index: 301;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-drawer.open { transform: translateX(0); }
+
+  .drawer-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .drawer-close {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+  }
+
+  .drawer-nav {
+    padding: 16px 0;
+    flex: 1;
+  }
+
+  .drawer-nav a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .drawer-nav a:hover, .drawer-nav a.active {
+    color: var(--accent);
+    background: rgba(26,86,219,0.05);
+    border-left-color: var(--accent);
+  }
+
+  .drawer-nav a svg { flex-shrink: 0; opacity: 0.6; }
+  .drawer-nav a.active svg { opacity: 1; }
+
+  .drawer-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* ─── MOBILE SEARCH BAR ─── */
+  .mobile-search {
+    display: none;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-search .search-bar {
+    width: 100%;
+    background: var(--bg);
+  }
+
+  /* ─── RESPONSIVE BREAKPOINTS ─── */
   @media (max-width: 1024px) {
     .product-grid { grid-template-columns: repeat(2, 1fr); }
     .main { grid-template-columns: 220px 1fr; gap: 20px; }
     .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .appliance-categories { grid-template-columns: repeat(3, 1fr); }
+    .appliance-grid { grid-template-columns: repeat(3, 1fr); }
   }
 
   @media (max-width: 768px) {
-    .main { grid-template-columns: 1fr; }
-    .sidebar { display: none; }
+    /* Hide desktop nav, show mobile */
     .nav-links { display: none; }
-    .search-bar { width: 160px; }
-    .product-grid { grid-template-columns: repeat(2, 1fr); }
-    .footer-inner { grid-template-columns: 1fr; }
+    .nav-right .search-bar { display: none; }
+    .nav-right .icon-btn:first-child { display: none; }
+
+    /* Show mobile elements */
+    .mobile-bottom-nav { display: block; }
+    .mobile-search { display: block; }
+
+    /* Nav adjustments */
+    .nav { height: 58px; padding: 0 16px; gap: 12px; }
+    .logo { font-size: 1rem; }
+
+    /* Add hamburger button */
+    .hamburger { display: flex !important; }
+
+    /* Hero */
+    .collection-hero { padding: 32px 16px; }
+    .collection-hero h1 { font-size: 1.6rem; }
+    .collection-hero p { font-size: 0.85rem; }
+
+    /* Appliances section */
+    .appliances-section { padding: 28px 16px 36px; }
+    .appliances-inner { max-width: 100%; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .section-title { font-size: 1.5rem; }
+    .section-desc { font-size: 0.82rem; }
+    .view-all-btn { font-size: 0.78rem; padding: 8px 14px; }
+    .appliance-categories { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .appliance-cat { border-radius: 10px; font-size: 0.72rem; }
+    .appliance-cat span { padding: 8px 6px; }
+    .appliance-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    /* Breadcrumb */
+    .breadcrumb { padding: 12px 16px 0; font-size: 0.75rem; }
+
+    /* Main layout */
+    .main { grid-template-columns: 1fr; padding: 16px 16px 100px; gap: 16px; }
+    .sidebar { display: none; }
+
+    /* Product grid */
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    /* Product card */
+    .product-card { border-radius: 10px; }
+    .product-info { padding: 10px; }
+    .product-name { font-size: 0.8rem; }
+    .product-brand { font-size: 0.65rem; }
+    .spec-tag { font-size: 0.62rem; padding: 2px 6px; }
+    .price-current { font-size: 0.95rem; }
+    .price-old { font-size: 0.7rem; }
+    .rating-count { font-size: 0.65rem; }
+
+    /* Toolbar */
+    .toolbar { flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; }
+    .result-count { font-size: 0.78rem; width: 100%; }
+    .sort-select { font-size: 0.78rem; padding: 6px 10px; flex: 1; }
+
+    /* Pagination */
+    .pagination { gap: 5px; margin-top: 32px; }
+    .page-btn { width: 36px; height: 36px; font-size: 0.78rem; }
+
+    /* Footer */
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; padding-bottom: 80px; }
+    .footer-brand { grid-column: 1 / -1; }
+    footer { padding: 40px 16px 100px; }
+    .footer-bottom { flex-direction: column; gap: 6px; text-align: center; padding-bottom: 20px; }
+  }
+
+  @media (max-width: 400px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .appliance-categories { grid-template-columns: repeat(2, 1fr); }
+    .product-info { padding: 8px; }
+    .product-name { font-size: 0.75rem; }
+    .product-specs { display: none; }
   }
 </style>
 </head>
@@ -791,6 +1023,9 @@
 <!-- HEADER -->
 <header>
   <nav class="nav">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <a href="#" class="logo">Andani <span class="logo-dot">Electronics</span></a>
     <ul class="nav-links">
       <li><a href="#" class="active" data-filter="all">Home</a></li>
@@ -817,6 +1052,102 @@
     </div>
   </nav>
 </header>
+
+<!-- MOBILE SEARCH -->
+<div class="mobile-search">
+  <div class="search-bar">
+    <svg width="14" height="14" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="mobileSearchInput" placeholder="Search TVs, fridges, ACs…">
+  </div>
+</div>
+
+<!-- MOBILE DRAWER OVERLAY -->
+<div class="mobile-menu-overlay" id="drawerOverlay"></div>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <a href="#" class="logo" style="font-size:1rem;">Andani <span class="logo-dot">Electronics</span></a>
+    <button class="drawer-close" id="drawerClose">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="#" data-filter="all" class="active">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+    <a href="#" data-filter="tvs">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+      Televisions
+    </a>
+    <a href="#" data-filter="appliances">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="12" y2="9"/></svg>
+      Home Appliances
+    </a>
+    <a href="#" data-filter="laptops">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+      Laptops
+    </a>
+    <a href="#" data-filter="phones">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/></svg>
+      Phones
+    </a>
+    <a href="#" data-filter="accessories">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Accessories
+    </a>
+    <a href="#" data-filter="printers">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Printers
+    </a>
+    <a href="#" data-filter="deals">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      🔥 Deals
+    </a>
+  </nav>
+  <div class="drawer-footer">
+    📍 Northern Region, Ghana<br>
+    📞 +233 20 000 0000
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-bottom-nav">
+  <ul>
+    <li>
+      <a href="#" data-filter="all" class="active" id="bottomHome">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+    </li>
+    <li>
+      <a href="#" data-filter="tvs" id="bottomTVs">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        TVs
+      </a>
+    </li>
+    <li>
+      <a href="#" data-filter="appliances" id="bottomAppliances">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="12" y2="9"/></svg>
+        Appliances
+      </a>
+    </li>
+    <li>
+      <a href="#" data-filter="deals" id="bottomDeals">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        Deals
+      </a>
+    </li>
+    <li>
+      <a href="#" id="bottomCart">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="mobile-cart-badge" id="mobileCartBadge">0</span>
+        Cart
+      </a>
+    </li>
+  </ul>
+</nav>
 
 <!-- HERO -->
 <section class="collection-hero">
@@ -1058,16 +1389,6 @@ function makeCard(p) {
   </div>`;
 }
 
-// ── Cart ─────────────────────────────────────────────────
-function addToCart(id) {
-  const badge = document.querySelector('.cart-badge');
-  const current = parseInt(badge.textContent) || 0;
-  badge.textContent = current + 1;
-  badge.style.display = 'flex';
-  badge.style.transform = 'scale(1.4)';
-  setTimeout(() => badge.style.transform = 'scale(1)', 200);
-}
-
 // ── All Products ─────────────────────────────────────────
 const allProducts = [
   // TVs
@@ -1140,68 +1461,8 @@ function renderGrid(filter) {
 // Initial render — show all
 renderGrid('all');
 
-// ── Nav filtering ─────────────────────────────────────────
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-    // Update active state
-    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-    this.classList.add('active');
-
-    const filter = this.dataset.filter;
-
-    // Show/hide appliance categories section
-    const appSection = document.querySelector('.appliances-section');
-    const mainSection = document.querySelector('.main');
-
-    if (filter === 'all') {
-      appSection.style.display = 'block';
-      mainSection.style.display = 'grid';
-      renderGrid('all');
-    } else if (filter === 'appliances') {
-      appSection.style.display = 'block';
-      mainSection.style.display = 'grid';
-      renderGrid('appliances');
-    } else if (filter === 'tvs') {
-      appSection.style.display = 'none';
-      mainSection.style.display = 'grid';
-      renderGrid('tvs');
-    } else if (filter === 'deals') {
-      appSection.style.display = 'none';
-      mainSection.style.display = 'grid';
-      renderGrid('deals');
-    } else {
-      appSection.style.display = 'none';
-      mainSection.style.display = 'grid';
-      renderGrid(filter);
-    }
-
-    // Update hero text
-    const heroH1 = document.querySelector('.collection-hero h1');
-    const heroP = document.querySelector('.collection-hero p');
-    const heroMap = {
-      all:        { h1: 'TVs, Microwaves & <span>Home Appliances</span>',   p: 'Northern Ghana's go-to store for quality electronics and home appliances at great prices.' },
-      tvs:        { h1: 'Televisions',                                       p: 'Smart TVs, 4K displays and more — from top brands like LG, Samsung & TCL.' },
-      appliances: { h1: 'Home <span>Appliances</span>',                      p: 'Fridges, washing machines, ACs, microwaves and more for your home.' },
-      laptops:    { h1: 'Laptops & <span>Computers</span>',                  p: 'Coming soon — premium laptops for work, school and beyond.' },
-      phones:     { h1: 'Smartphones & <span>Phones</span>',                 p: 'Coming soon — the latest smartphones at great prices.' },
-      accessories:{ h1: 'Accessories',                                       p: 'Coming soon — cables, chargers, cases and more.' },
-      printers:   { h1: 'Printers & <span>Scanners</span>',                  p: 'Coming soon — office and home printing solutions.' },
-      deals:      { h1: '🔥 Hot <span>Deals</span>',                         p: 'Our best sale prices — grab them before they're gone!' },
-    };
-    if (heroMap[filter]) {
-      heroH1.innerHTML = heroMap[filter].h1;
-      heroP.textContent = heroMap[filter].p;
-    }
-
-    // Scroll to top of page
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-});
-
-// ── Search ────────────────────────────────────────────────
-document.querySelector('.search-bar input').addEventListener('input', function() {
-  const q = this.value.toLowerCase().trim();
+// ── Search (desktop + mobile) ─────────────────────────────
+function doSearch(q) {
   if (!q) { renderGrid('all'); return; }
   const results = allProducts.filter(p =>
     p.name.toLowerCase().includes(q) ||
@@ -1209,12 +1470,129 @@ document.querySelector('.search-bar input').addEventListener('input', function()
     p.specs.some(s => s.toLowerCase().includes(q))
   );
   grid.innerHTML = '';
+  const appSection = document.querySelector('.appliances-section');
+  if (appSection) appSection.style.display = 'none';
   if (results.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);font-family:'Syne',sans-serif;">No products found for "<strong>${this.value}</strong>"</div>`;
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);font-family:'Syne',sans-serif;">No products found for "<strong>${q}</strong>"</div>`;
   } else {
     results.forEach(p => { grid.innerHTML += makeCard(p); });
   }
+}
+
+document.querySelector('.search-bar input').addEventListener('input', function() {
+  doSearch(this.value.toLowerCase().trim());
+  // sync mobile search
+  const mob = document.getElementById('mobileSearchInput');
+  if (mob) mob.value = this.value;
 });
+
+const mobileSearchInput = document.getElementById('mobileSearchInput');
+if (mobileSearchInput) {
+  mobileSearchInput.addEventListener('input', function() {
+    doSearch(this.value.toLowerCase().trim());
+  });
+}
+
+// ── Mobile Drawer ─────────────────────────────────────────
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const drawerOverlay = document.getElementById('drawerOverlay');
+const mobileDrawer = document.getElementById('mobileDrawer');
+const drawerClose = document.getElementById('drawerClose');
+
+function openDrawer() {
+  drawerOverlay.style.display = 'block';
+  setTimeout(() => {
+    drawerOverlay.classList.add('open');
+    mobileDrawer.classList.add('open');
+  }, 10);
+}
+
+function closeDrawer() {
+  drawerOverlay.classList.remove('open');
+  mobileDrawer.classList.remove('open');
+  setTimeout(() => { drawerOverlay.style.display = 'none'; }, 300);
+}
+
+if (hamburgerBtn) hamburgerBtn.addEventListener('click', openDrawer);
+if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+
+// Drawer nav links
+document.querySelectorAll('.drawer-nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const filter = this.dataset.filter;
+    closeDrawer();
+    setTimeout(() => applyFilter(filter), 320);
+    document.querySelectorAll('.drawer-nav a').forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ── Unified filter function ───────────────────────────────
+function applyFilter(filter) {
+  // Sync all nav active states
+  document.querySelectorAll('.nav-links a, .drawer-nav a, .mobile-bottom-nav a[data-filter]').forEach(l => {
+    l.classList.toggle('active', l.dataset.filter === filter);
+  });
+
+  const appSection = document.querySelector('.appliances-section');
+  if (appSection) appSection.style.display = (filter === 'all' || filter === 'appliances') ? 'block' : 'none';
+
+  renderGrid(filter);
+
+  const heroH1 = document.querySelector('.collection-hero h1');
+  const heroP = document.querySelector('.collection-hero p');
+  const heroMap = {
+    all:        { h1: 'TVs, Microwaves & <span>Home Appliances</span>', p: "Northern Ghana's go-to store for quality electronics and home appliances at great prices." },
+    tvs:        { h1: 'Televisions',                                    p: 'Smart TVs, 4K displays and more — from top brands like LG, Samsung & TCL.' },
+    appliances: { h1: 'Home <span>Appliances</span>',                   p: 'Fridges, washing machines, ACs, microwaves and more for your home.' },
+    laptops:    { h1: 'Laptops & <span>Computers</span>',               p: 'Coming soon — premium laptops for work, school and beyond.' },
+    phones:     { h1: 'Smartphones & <span>Phones</span>',              p: 'Coming soon — the latest smartphones at great prices.' },
+    accessories:{ h1: 'Accessories',                                    p: 'Coming soon — cables, chargers, cases and more.' },
+    printers:   { h1: 'Printers & <span>Scanners</span>',               p: 'Coming soon — office and home printing solutions.' },
+    deals:      { h1: '🔥 Hot <span>Deals</span>',                      p: "Our best sale prices — grab them before they're gone!" },
+  };
+  if (heroH1 && heroMap[filter]) {
+    heroH1.innerHTML = heroMap[filter].h1;
+    heroP.textContent = heroMap[filter].p;
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Desktop nav links
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    applyFilter(this.dataset.filter);
+  });
+});
+
+// Bottom nav links
+document.querySelectorAll('.mobile-bottom-nav a[data-filter]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    applyFilter(this.dataset.filter);
+  });
+});
+
+// ── Cart badge sync ───────────────────────────────────────
+function addToCart(id) {
+  const badge = document.querySelector('.cart-badge');
+  const mobileBadge = document.getElementById('mobileCartBadge');
+  const current = parseInt(badge.textContent) || 0;
+  const newCount = current + 1;
+
+  badge.textContent = newCount;
+  badge.style.display = 'flex';
+  badge.style.transform = 'scale(1.4)';
+  setTimeout(() => badge.style.transform = 'scale(1)', 200);
+
+  if (mobileBadge) {
+    mobileBadge.textContent = newCount;
+    mobileBadge.style.display = 'flex';
+  }
+}
 
 // ── Pagination ───────────────────────────────────────────
 document.querySelectorAll('.page-btn').forEach(btn => {
