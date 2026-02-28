@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andani Electronics – TVs, Appliances & More</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --surface: #ffffff;
+    --surface2: #eef0f5;
+    --border: rgba(0,0,0,0.08);
+    --accent: #1a56db;
+    --accent2: #0077ff;
+    --text: #111827;
+    --muted: #6b7280;
+    --card-bg: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 68px;
+    flex-wrap: nowrap;
+    overflow: visible;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .logo-dot { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .nav-links a.active { color: var(--accent); }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .search-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 200px;
+    min-width: 140px;
+    transition: border-color 0.2s;
+  }
+
+  .search-bar:focus-within {
+    border-color: var(--accent);
+  }
+
+  .search-bar input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    width: 100%;
+  }
+
+  .search-bar input::placeholder { color: var(--muted); }
+
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .icon-btn:hover { border-color: var(--accent); background: var(--surface2); }
+
+  .cart-badge {
+    position: absolute;
+    top: -6px; right: -6px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    font-family: 'Syne', sans-serif;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── HERO BAND ─── */
+  .collection-hero {
+    background: linear-gradient(135deg, #e8edf8 0%, #dce6f5 50%, #e8f0fe 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .collection-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(26,86,219,0.1) 0%, transparent 70%);
+  }
+
+  .collection-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    position: relative;
+    color: var(--text);
+  }
+
+  .collection-hero h1 span { color: var(--accent); }
+
+  .collection-hero p {
+    color: var(--muted);
+    margin-top: 10px;
+    font-size: 1rem;
+    position: relative;
+  }
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb {
+    max-width: 1400px;
+    margin: 20px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb span { color: var(--text); }
+
+  /* ─── MAIN LAYOUT ─── */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 24px 80px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { flex-shrink: 0; }
+
+  .filter-group {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .filter-group h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .filter-options { display: flex; flex-direction: column; gap: 8px; }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .filter-option:hover { color: var(--accent); }
+
+  .filter-option input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .filter-count {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .price-range { display: flex; flex-direction: column; gap: 12px; }
+
+  .price-inputs { display: flex; gap: 8px; }
+
+  .price-inputs input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    width: 100%;
+    outline: none;
+  }
+
+  .price-inputs input:focus { border-color: var(--accent); }
+
+  .apply-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+  }
+
+  .apply-btn:hover { opacity: 0.85; }
+
+  /* ─── PRODUCTS AREA ─── */
+  .products-area {}
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-count {
+    font-size: 0.85rem;
+    color: var(--muted);
+    flex: 1;
+  }
+
+  .result-count strong { color: var(--text); }
+
+  .sort-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .sort-select:focus { border-color: var(--accent); }
+
+  .view-toggle { display: flex; gap: 4px; }
+
+  .view-btn {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .view-btn.active, .view-btn:hover {
+    border-color: var(--accent);
+    background: rgba(26,86,219,0.1);
+  }
+
+  /* ─── PRODUCT GRID ─── */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .product-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(26,86,219,0.3);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  }
+
+  .product-card:nth-child(1) { animation-delay: 0.05s; }
+  .product-card:nth-child(2) { animation-delay: 0.1s; }
+  .product-card:nth-child(3) { animation-delay: 0.15s; }
+  .product-card:nth-child(4) { animation-delay: 0.2s; }
+  .product-card:nth-child(5) { animation-delay: 0.25s; }
+  .product-card:nth-child(6) { animation-delay: 0.3s; }
+
+  .product-image-wrap {
+    aspect-ratio: 4/3;
+    background: #f3f5fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-image-wrap img {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.12));
+  }
+
+  .product-card:hover .product-image-wrap img { transform: scale(1.07); }
+
+  .badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .badge-sale { background: #ff3e6c; color: #fff; }
+  .badge-new { background: var(--accent); color: #000; }
+  .badge-hot { background: #ff8c00; color: #fff; }
+
+  .wishlist-btn {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  .product-card:hover .wishlist-btn { opacity: 1; }
+  .wishlist-btn:hover { background: rgba(255,62,108,0.2); border-color: #ff3e6c; }
+
+  .quick-add {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(26,86,219,0.95);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 10px;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 0.25s;
+    cursor: pointer;
+  }
+
+  .product-card:hover .quick-add { transform: translateY(0); }
+
+  .product-info {
+    padding: 16px;
+  }
+
+  .product-brand {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .product-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+
+  .spec-tag {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .price-wrap {}
+
+  .price-current {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .price-old {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-left: 6px;
+  }
+
+  .stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+  }
+
+  .star { color: #ffb800; }
+  .star-empty { color: var(--surface2); }
+
+  .rating-count { color: var(--muted); font-size: 0.72rem; margin-left: 4px; }
+
+  /* ─── HOME APPLIANCES SECTION ─── */
+  .appliances-section {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 56px;
+  }
+
+  .appliances-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .section-title span { color: var(--accent); }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 8px;
+    max-width: 480px;
+  }
+
+  .view-all-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    border: 2px solid var(--accent);
+    padding: 10px 20px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .view-all-btn:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .appliance-categories {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .appliance-cat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .appliance-cat:hover {
+    border-color: var(--accent);
+    background: rgba(26,86,219,0.05);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .appliance-icon {
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .appliance-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .appliance-cat:hover .appliance-icon img {
+    transform: scale(1.07);
+  }
+
+  .appliance-cat span {
+    display: block;
+    padding: 12px 10px;
+    width: 100%;
+  }
+
+  .appliance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 1200px) {
+    .appliance-grid { grid-template-columns: repeat(3, 1fr); }
+    .appliance-categories { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .appliance-grid { grid-template-columns: repeat(2, 1fr); }
+    .appliance-categories { grid-template-columns: repeat(3, 1fr); }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .appliance-categories { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ─── PAGINATION ─── */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 48px;
+  }
+
+  .page-btn {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #e8edf8;
+    border-top: 1px solid var(--border);
+    padding: 56px 24px 32px;
+  }
+
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand .logo { font-size: 1.2rem; display: inline-flex; margin-bottom: 14px; }
+
+  .footer-brand p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    max-width: 280px;
+  }
+
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .footer-col a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.88rem;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  .footer-col a:hover { opacity: 1; color: var(--accent); }
+
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  /* SVG icons inline */
+  svg { display: block; }
+
+  @media (max-width: 1024px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .main { grid-template-columns: 220px 1fr; gap: 20px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .nav-links { display: none; }
+    .search-bar { width: 160px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<!-- HEADER -->
+<header>
+  <nav class="nav">
+    <a href="#" class="logo">Andani <span class="logo-dot">Electronics</span></a>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#" class="active">Laptops</a></li>
+      <li><a href="#">Phones</a></li>
+      <li><a href="#">Accessories</a></li>
+      <li><a href="#">Printers</a></li>
+      <li><a href="#">TVs</a></li>
+      <li><a href="#">Home Appliances</a></li>
+      <li><a href="#">Deals</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="search-bar">
+        <svg width="14" height="14" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search products…">
+      </div>
+      <div class="icon-btn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="icon-btn">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" style="display:none">0</span>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="collection-hero">
+  <h1>TVs, Microwaves & <span>Home Appliances</span></h1>
+  <p>Northern Ghana's go-to store for quality electronics and home appliances at great prices.</p>
+</section>
+
+<!-- HOME APPLIANCES SECTION -->
+<section class="appliances-section">
+  <div class="appliances-inner">
+    <div class="section-header">
+      <div>
+        <p class="section-label">Category</p>
+        <h2 class="section-title">Home <span>Appliances</span></h2>
+        <p class="section-desc">Everything you need to power your home — from fridges to washing machines and beyond.</p>
+      </div>
+      <a href="#" class="view-all-btn">View All Appliances →</a>
+    </div>
+
+    <div class="appliance-categories">
+      <a href="#" class="appliance-cat">
+        <div class="appliance-icon"><img src="https://compughana.com/cdn/shop/files/cyan37.avif?v=1770985075&width=200" alt="Refrigerators"></div>
+        <span>Refrigerators</span>
+      </a>
+      <a href="#" class="appliance-cat">
+        <div class="appliance-icon"><img src="https://compughana.com/cdn/shop/files/lg_qled_43.jpg?v=1764673130&width=200" alt="Washing Machines"></div>
+        <span>Washing Machines</span>
+      </a>
+      <a href="#" class="appliance-cat">
+        <div class="appliance-icon"><img src="https://compughana.com/cdn/shop/files/bts8.jpg?v=1764676004&width=200" alt="Air Conditioners"></div>
+        <span>Air Conditioners</span>
+      </a>
+      <a href="#" class="appliance-cat">
+        <div class="appliance-icon"><img src="https://compughana.com/cdn/shop/files/2eid_fn03192_2.jpg?v=1764859359&width=200" alt="Microwaves"></div>
+        <span>Microwaves</span>
+      </a>
+      <a href="#" class="appliance-cat">
+        <div class="appliance-icon"><img src="https://compughana.com/cdn/shop/files/afric141.avif?v=1768317637&width=200" alt="Televisions"></div>
+        <span>Televisions</span>
+      </a>
+      <a href="#" class="appliance-cat">
+        <div class="appliance-icon"><img src="https://compughana.com/cdn/shop/files/lg_qled_13571708.jpg?v=1764680759&width=200" alt="Water Dispensers"></div>
+        <span>Water Dispensers</span>
+      </a>
+    </div>
+
+    <div class="appliance-grid" id="applianceGrid"></div>
+  </div>
+</section>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="#">Home</a>
+  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  <span>TVs & Home Appliances</span>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="filter-group">
+      <h3>Brand <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox" checked> LG <span class="filter-count">42</span></label>
+        <label class="filter-option"><input type="checkbox"> SAMSUNG <span class="filter-count">42</span></label>
+        <label class="filter-option"><input type="checkbox"> TCL <span class="filter-count">55</span></label>
+        <label class="filter-option"><input type="checkbox"> SIGMA <span class="filter-count">11</span></label>
+        <label class="filter-option"><input type="checkbox"> NASCO <span class="filter-count">18</span></label>
+        <label class="filter-option"><input type="checkbox"> MIDEA <span class="filter-count">9</span></label>
+        <label class="filter-option"><input type="checkbox"> BLUTEK <span class="filter-count">6</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Price Range <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
+      <div class="price-range">
+        <div class="price-inputs">
+          <input type="number" placeholder="Min GH₵">
+          <input type="number" placeholder="Max GH₵">
+        </div>
+        <button class="apply-btn">Apply Filter</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Category <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox" checked> Televisions <span class="filter-count">89</span></label>
+        <label class="filter-option"><input type="checkbox"> Air Conditioners <span class="filter-count">54</span></label>
+        <label class="filter-option"><input type="checkbox"> Refrigerators <span class="filter-count">48</span></label>
+        <label class="filter-option"><input type="checkbox"> Microwaves <span class="filter-count">32</span></label>
+        <label class="filter-option"><input type="checkbox"> Washing Machines <span class="filter-count">28</span></label>
+        <label class="filter-option"><input type="checkbox"> Water Dispensers <span class="filter-count">17</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Screen Size <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox"> 32" & Under <span class="filter-count">34</span></label>
+        <label class="filter-option"><input type="checkbox" checked> 43" – 50" <span class="filter-count">41</span></label>
+        <label class="filter-option"><input type="checkbox"> 55" – 65" <span class="filter-count">29</span></label>
+        <label class="filter-option"><input type="checkbox"> 70" & Above <span class="filter-count">12</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Availability <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox" checked> In Stock <span class="filter-count">86</span></label>
+        <label class="filter-option"><input type="checkbox"> Pre-order <span class="filter-count">5</span></label>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- PRODUCTS -->
+  <section class="products-area">
+
+    <div class="toolbar">
+      <p class="result-count">Showing <strong>1–12</strong> of <strong>288</strong> products</p>
+      <select class="sort-select">
+        <option>Sort: Featured</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+        <option>Newest Arrivals</option>
+        <option>Best Sellers</option>
+        <option>Top Rated</option>
+      </select>
+      <div class="view-toggle">
+        <button class="view-btn active">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+        <button class="view-btn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <button class="page-btn">‹</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">4</button>
+      <button class="page-btn">5</button>
+      <button class="page-btn">›</button>
+    </div>
+
+  </section>
+</div>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="logo">Andani <span class="logo-dot">Electronics</span></a>
+      <p>Northern Ghana's trusted electronics destination. Quality gadgets, unbeatable prices, and expert support — serving the Northern Region and beyond.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Laptops</a></li>
+        <li><a href="#">Smartphones</a></li>
+        <li><a href="#">Home Appliances</a></li>
+        <li><a href="#">Accessories</a></li>
+        <li><a href="#">Printers</a></li>
+        <li><a href="#">TVs & Displays</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Warranty</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Andani Electronics. All rights reserved.</span>
+    <span>Proudly serving Northern Ghana ❤️</span>
+  </div>
+</footer>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────
+function stars(n) {
+  let s = '';
+  for(let i=1;i<=5;i++) s += `<span class="${i<=n?'star':'star-empty'}">★</span>`;
+  return s;
+}
+function mkBadge(b) {
+  if(!b) return '';
+  return `<span class="badge badge-${b}">${b}</span>`;
+}
+function renderCard(p, container) {
+  const old = p.oldPrice ? `<span class="price-old">GH₵ ${p.oldPrice.toLocaleString()}</span>` : '';
+  container.innerHTML += `
+  <div class="product-card">
+    <div class="product-image-wrap">
+      ${mkBadge(p.badge)}
+      <img src="${p.image}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23f3f5fb%22 width=%22200%22 height=%22150%22/><text fill=%22%236b7280%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2214%22>No Image</text></svg>'">
+      <div class="wishlist-btn">
+        <svg width="14" height="14" fill="none" stroke="#ff3e6c" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="quick-add" onclick="addToCart(${p.id})">+ Add to Cart</div>
+    </div>
+    <div class="product-info">
+      <div class="product-brand">${p.brand}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-specs">${p.specs.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>
+      <div class="product-footer">
+        <div class="price-wrap">
+          <span class="price-current">GH₵ ${p.price.toLocaleString()}</span>${old}
+        </div>
+        <div class="stars">${stars(p.rating)}<span class="rating-count">(${p.reviews})</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Cart ─────────────────────────────────────────────────
+function addToCart(id) {
+  const badge = document.querySelector('.cart-badge');
+  const current = parseInt(badge.textContent) || 0;
+  badge.textContent = current + 1;
+  badge.style.display = 'flex';
+  badge.style.transform = 'scale(1.4)';
+  setTimeout(() => badge.style.transform = 'scale(1)', 200);
+}
+
+// ── Products (top grid) ──────────────────────────────────
+const products = [
+  { id:1,  brand:'SIGMA',  name:'SIGMA 93L Table Top Fridge – Gray',                         price:1299, oldPrice:1499, image:'https://compughana.com/cdn/shop/files/WP810-8.webp?v=1769427878&width=533',                                                                                     badge:'sale', specs:['93L Capacity','Table Top','Gray','Energy Efficient'],    rating:4, reviews:18 },
+  { id:2,  brand:'LG',     name:'LG 55" LED UHD Smart Satellite 4K Television',               price:6999, oldPrice:9599, image:'https://compughana.com/cdn/shop/files/afric141.avif?v=1768317637&width=533',                                                                                   badge:'sale', specs:['55"','4K UHD','Smart TV','Satellite'],                   rating:5, reviews:43 },
+  { id:3,  brand:'BLUTEK', name:'BLUTEK 32" LED FHD Satellite Smart Television',              price:1399, oldPrice:1799, image:'https://compughana.com/cdn/shop/files/blutek32.jpg?v=1764672717&width=533',                                                                                    badge:'sale', specs:['32"','FHD','Smart','Satellite'],                         rating:4, reviews:27 },
+  { id:4,  brand:'SIGMA',  name:'SIGMA 2.0 HP R410 Breeze Air Conditioner',                  price:4099, oldPrice:4999, image:'https://compughana.com/cdn/shop/files/sigma-2.0hp-air-con-510x510_42cd3665-0557-49d8-801f-858b8e66f3ab.jpg?v=1767024361&width=533',                           badge:'sale', specs:['2.0 HP','R410','Split Unit','Remote'],                   rating:4, reviews:35 },
+  { id:5,  brand:'NASCO',  name:'NASCO 7L AC-0801R Air Cooler',                              price:999,                  image:'https://compughana.com/cdn/shop/files/project_540.jpg?v=1764677670&width=533',                                                                                  badge:null,   specs:['7L Tank','3 Speeds','Remote','Timer'],                    rating:4, reviews:22 },
+  { id:6,  brand:'LG',     name:'LG 43" LED UHD Smart Satellite 4K Television',               price:4599, oldPrice:7099, image:'https://compughana.com/cdn/shop/files/cashback_y24_lg2.jpg?v=1764749327&width=533',                                                                            badge:'sale', specs:['43"','4K UHD','Smart TV','Satellite'],                   rating:5, reviews:61 },
+  { id:7,  brand:'LG',     name:'LG 143L Chest Freezer – Gray',                              price:2799, oldPrice:4199, image:'https://compughana.com/cdn/shop/files/Hikvision_camera_42.jpg?v=1771584831&width=533',                                                                          badge:'sale', specs:['143L','Chest Freezer','Gray','Low Noise'],               rating:4, reviews:19 },
+  { id:8,  brand:'NASCO',  name:'NASCO 20LTR Solo Microwave',                                price:999,                  image:'https://compughana.com/cdn/shop/files/prime_283.jpg?v=1764859495&width=533',                                                                                    badge:null,   specs:['20L','Solo','800W','5 Power Levels'],                   rating:4, reviews:38 },
+  { id:9,  brand:'TCL',    name:'TCL QLED 43S5K 2K Smart Android Television',                price:4199,                 image:'https://compughana.com/cdn/shop/files/lg_qled_125791.jpg?v=1764681446&width=533',                                                                               badge:null,   specs:['43"','QLED','2K','Android TV'],                          rating:4, reviews:29 },
+  { id:10, brand:'SIGMA',  name:'SIGMA 19L 3-Tap Cabinet Water Dispenser – Black',            price:999,  oldPrice:1099,  image:'https://compughana.com/cdn/shop/files/lg_qled_13571708.jpg?v=1764680759&width=533',                                                                             badge:'sale', specs:['19L','3 Taps','Storage Cabinet','Black'],               rating:4, reviews:14 },
+  { id:11, brand:'LG',     name:'LG DualCool Inverter 1.5HP Air Conditioner',                price:5999, oldPrice:8199, image:'https://compughana.com/cdn/shop/files/bts8.jpg?v=1764676004&width=533',                                                                                         badge:'sale', specs:['1.5 HP','Inverter','R410','DualCool'],                  rating:5, reviews:47 },
+  { id:12, brand:'LG',     name:'LG 8KG AI DD™ Front Load Washing Machine – Black',          price:6799, oldPrice:8899, image:'https://compughana.com/cdn/shop/files/lg_qled_43.jpg?v=1764673130&width=533',                                                                                   badge:'sale', specs:['8KG','Front Load','AI DD™','Matte Black'],              rating:5, reviews:32 },
+];
+
+const grid = document.getElementById('productGrid');
+products.forEach(p => renderCard(p, grid));
+
+// ── Appliances (bottom section) ──────────────────────────
+const appliances = [
+  { id:101, brand:'SAMSUNG', name:'SAMSUNG 627L 3-Door Side By Side Fridge + Dispenser – Black', price:33099,             image:'https://compughana.com/cdn/shop/files/cyan37.avif?v=1770985075&width=533',                                                                                     badge:null,   specs:['627L','Side-by-Side','Water Dispenser','Black'],          rating:5, reviews:9  },
+  { id:102, brand:'NASCO',   name:'Nasco 32" LED Digital Satellite Television',                   price:1499,              image:'https://compughana.com/cdn/shop/files/sigma-2.0hp-air-con-5115.jpg?v=1768569131&width=533',                                                                    badge:null,   specs:['32"','LED','Digital','Satellite'],                        rating:4, reviews:33 },
+  { id:103, brand:'LG',      name:'LG 199L GN-Y331SLS Fridge',                                   price:4099, oldPrice:5499, image:'https://compughana.com/cdn/shop/files/afric157.avif?v=1768388477&width=533',                                                                                  badge:'sale', specs:['199L','Double Door','No Frost','Silver'],              rating:4, reviews:24 },
+  { id:104, brand:'SIGMA',   name:'SIGMA 1.5 HP Luxe Inverter R32 Air Conditioner',               price:3399, oldPrice:4399, image:'https://compughana.com/cdn/shop/files/Split-R32-Inverter-Luxe-Right_1000x_adbc65b3-97ac-4ded-b7df-0f6c55394658.webp?v=1767026285&width=533',              badge:'sale', specs:['1.5 HP','R32 Inverter','Luxe Series','Remote'],          rating:5, reviews:28 },
+  { id:105, brand:'SIGMA',   name:'SIGMA AC Luxe 2.0 HP Inverter R32 Air Conditioner',           price:6399, oldPrice:7799, image:'https://compughana.com/cdn/shop/files/Split-R32-Inverter-Luxe-Right_1000x_019f6705-2e0b-4abb-95a0-04e2a04773bc.webp?v=1767024882&width=533',               badge:'sale', specs:['2.0 HP','R32 Inverter','Luxe Series','Timer'],           rating:5, reviews:16 },
+  { id:106, brand:'MIDEA',   name:'MIDEA 25LTR Grill Microwave',                                 price:1999,              image:'https://compughana.com/cdn/shop/files/2eid_fn03192_2.jpg?v=1764859359&width=533',                                                                               badge:null,   specs:['25L','Grill','900W','6 Programs'],                        rating:4, reviews:21 },
+  { id:107, brand:'LG',      name:'LG 42L NeoChef™ Stainless Microwave with Grill Oven',         price:3099, oldPrice:3999, image:'https://compughana.com/cdn/shop/files/bto_lg61231.jpg?v=1764859152&width=533',                                                                                badge:'sale', specs:['42L','Smart Inverter','Grill Oven','S/Steel'],         rating:5, reviews:44 },
+  { id:108, brand:'SAMSUNG', name:'SAMSUNG 43" LED FHD Smart Satellite Television',               price:5299,              image:'https://compughana.com/cdn/shop/files/lg_tv_524515.jpg?v=1764750146&width=533',                                                                                badge:null,   specs:['43"','FHD','Smart','Satellite'],                          rating:4, reviews:38 },
+  { id:109, brand:'LG',      name:'LG OLED 55B46LA 4K Smart AI TV + XBOOM Speaker',              price:17599,oldPrice:24699,image:'https://compughana.com/cdn/shop/files/project_55.jpg?v=1764749351&width=533',                                                                                 badge:'sale', specs:['55"','OLED','4K AI','Bundled Speaker'],                rating:5, reviews:12 },
+  { id:110, brand:'SAMSUNG', name:'SAMSUNG 55" Crystal UHD Smart 4K Television',                 price:9699,              image:'https://compughana.com/cdn/shop/files/lg_tv_524512.jpg?v=1764682088&width=533',                                                                                badge:null,   specs:['55"','Crystal UHD','4K Smart','Satellite'],              rating:4, reviews:26 },
+  { id:111, brand:'TCL',     name:'TCL 50" QLED PRO 50P7K 4K Smart Android Television',          price:8799,              image:'https://compughana.com/cdn/shop/files/lg_qled_8.jpg?v=1764681461&width=533',                                                                                   badge:null,   specs:['50"','QLED PRO','4K','Android TV'],                      rating:4, reviews:31 },
+  { id:112, brand:'TCL',     name:'TCL 2.5HP R410A Split Inverter Air Conditioner',              price:11399,             image:'https://compughana.com/cdn/shop/files/cash_back_tcl24_5.jpg?v=1764681026&width=533',                                                                             badge:null,   specs:['2.5 HP','R410A','Inverter','Split Unit'],                rating:4, reviews:17 },
+];
+
+const appGrid = document.getElementById('applianceGrid');
+appliances.forEach(p => renderCard(p, appGrid));
+
+// ── Pagination ───────────────────────────────────────────
+document.querySelectorAll('.page-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+    if(this.textContent !== '‹' && this.textContent !== '›') this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
