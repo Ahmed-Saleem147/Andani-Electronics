@@ -793,14 +793,14 @@
   <nav class="nav">
     <a href="#" class="logo">Andani <span class="logo-dot">Electronics</span></a>
     <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#" class="active">Laptops</a></li>
-      <li><a href="#">Phones</a></li>
-      <li><a href="#">Accessories</a></li>
-      <li><a href="#">Printers</a></li>
-      <li><a href="#">TVs</a></li>
-      <li><a href="#">Home Appliances</a></li>
-      <li><a href="#">Deals</a></li>
+      <li><a href="#" class="active" data-filter="all">Home</a></li>
+      <li><a href="#" data-filter="laptops">Laptops</a></li>
+      <li><a href="#" data-filter="phones">Phones</a></li>
+      <li><a href="#" data-filter="accessories">Accessories</a></li>
+      <li><a href="#" data-filter="printers">Printers</a></li>
+      <li><a href="#" data-filter="tvs">TVs</a></li>
+      <li><a href="#" data-filter="appliances">Home Appliances</a></li>
+      <li><a href="#" data-filter="deals">Deals</a></li>
     </ul>
     <div class="nav-right">
       <div class="search-bar">
@@ -1032,10 +1032,10 @@ function mkBadge(b) {
   if(!b) return '';
   return `<span class="badge badge-${b}">${b}</span>`;
 }
-function renderCard(p, container) {
+function makeCard(p) {
   const old = p.oldPrice ? `<span class="price-old">GH₵ ${p.oldPrice.toLocaleString()}</span>` : '';
-  container.innerHTML += `
-  <div class="product-card">
+  return `
+  <div class="product-card" data-category="${p.category}">
     <div class="product-image-wrap">
       ${mkBadge(p.badge)}
       <img src="${p.image}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23f3f5fb%22 width=%22200%22 height=%22150%22/><text fill=%22%236b7280%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2214%22>No Image</text></svg>'">
@@ -1068,43 +1068,153 @@ function addToCart(id) {
   setTimeout(() => badge.style.transform = 'scale(1)', 200);
 }
 
-// ── Products (top grid) ──────────────────────────────────
-const products = [
-  { id:1,  brand:'SIGMA',  name:'SIGMA 93L Table Top Fridge – Gray',                         price:1299, oldPrice:1499, image:'https://compughana.com/cdn/shop/files/WP810-8.webp?v=1769427878&width=533',                                                                                     badge:'sale', specs:['93L Capacity','Table Top','Gray','Energy Efficient'],    rating:4, reviews:18 },
-  { id:2,  brand:'LG',     name:'LG 55" LED UHD Smart Satellite 4K Television',               price:6999, oldPrice:9599, image:'https://compughana.com/cdn/shop/files/afric141.avif?v=1768317637&width=533',                                                                                   badge:'sale', specs:['55"','4K UHD','Smart TV','Satellite'],                   rating:5, reviews:43 },
-  { id:3,  brand:'BLUTEK', name:'BLUTEK 32" LED FHD Satellite Smart Television',              price:1399, oldPrice:1799, image:'https://compughana.com/cdn/shop/files/blutek32.jpg?v=1764672717&width=533',                                                                                    badge:'sale', specs:['32"','FHD','Smart','Satellite'],                         rating:4, reviews:27 },
-  { id:4,  brand:'SIGMA',  name:'SIGMA 2.0 HP R410 Breeze Air Conditioner',                  price:4099, oldPrice:4999, image:'https://compughana.com/cdn/shop/files/sigma-2.0hp-air-con-510x510_42cd3665-0557-49d8-801f-858b8e66f3ab.jpg?v=1767024361&width=533',                           badge:'sale', specs:['2.0 HP','R410','Split Unit','Remote'],                   rating:4, reviews:35 },
-  { id:5,  brand:'NASCO',  name:'NASCO 7L AC-0801R Air Cooler',                              price:999,                  image:'https://compughana.com/cdn/shop/files/project_540.jpg?v=1764677670&width=533',                                                                                  badge:null,   specs:['7L Tank','3 Speeds','Remote','Timer'],                    rating:4, reviews:22 },
-  { id:6,  brand:'LG',     name:'LG 43" LED UHD Smart Satellite 4K Television',               price:4599, oldPrice:7099, image:'https://compughana.com/cdn/shop/files/cashback_y24_lg2.jpg?v=1764749327&width=533',                                                                            badge:'sale', specs:['43"','4K UHD','Smart TV','Satellite'],                   rating:5, reviews:61 },
-  { id:7,  brand:'LG',     name:'LG 143L Chest Freezer – Gray',                              price:2799, oldPrice:4199, image:'https://compughana.com/cdn/shop/files/Hikvision_camera_42.jpg?v=1771584831&width=533',                                                                          badge:'sale', specs:['143L','Chest Freezer','Gray','Low Noise'],               rating:4, reviews:19 },
-  { id:8,  brand:'NASCO',  name:'NASCO 20LTR Solo Microwave',                                price:999,                  image:'https://compughana.com/cdn/shop/files/prime_283.jpg?v=1764859495&width=533',                                                                                    badge:null,   specs:['20L','Solo','800W','5 Power Levels'],                   rating:4, reviews:38 },
-  { id:9,  brand:'TCL',    name:'TCL QLED 43S5K 2K Smart Android Television',                price:4199,                 image:'https://compughana.com/cdn/shop/files/lg_qled_125791.jpg?v=1764681446&width=533',                                                                               badge:null,   specs:['43"','QLED','2K','Android TV'],                          rating:4, reviews:29 },
-  { id:10, brand:'SIGMA',  name:'SIGMA 19L 3-Tap Cabinet Water Dispenser – Black',            price:999,  oldPrice:1099,  image:'https://compughana.com/cdn/shop/files/lg_qled_13571708.jpg?v=1764680759&width=533',                                                                             badge:'sale', specs:['19L','3 Taps','Storage Cabinet','Black'],               rating:4, reviews:14 },
-  { id:11, brand:'LG',     name:'LG DualCool Inverter 1.5HP Air Conditioner',                price:5999, oldPrice:8199, image:'https://compughana.com/cdn/shop/files/bts8.jpg?v=1764676004&width=533',                                                                                         badge:'sale', specs:['1.5 HP','Inverter','R410','DualCool'],                  rating:5, reviews:47 },
-  { id:12, brand:'LG',     name:'LG 8KG AI DD™ Front Load Washing Machine – Black',          price:6799, oldPrice:8899, image:'https://compughana.com/cdn/shop/files/lg_qled_43.jpg?v=1764673130&width=533',                                                                                   badge:'sale', specs:['8KG','Front Load','AI DD™','Matte Black'],              rating:5, reviews:32 },
+// ── All Products ─────────────────────────────────────────
+const allProducts = [
+  // TVs
+  { id:2,  category:'tvs',        brand:'LG',      name:'LG 55" LED UHD Smart Satellite 4K Television',          price:6999,  oldPrice:9599,  image:'https://compughana.com/cdn/shop/files/afric141.avif?v=1768317637&width=533',                                                                                badge:'sale', specs:['55"','4K UHD','Smart TV','Satellite'],                 rating:5, reviews:43 },
+  { id:3,  category:'tvs',        brand:'BLUTEK',  name:'BLUTEK 32" LED FHD Satellite Smart Television',         price:1399,  oldPrice:1799,  image:'https://compughana.com/cdn/shop/files/blutek32.jpg?v=1764672717&width=533',                                                                               badge:'sale', specs:['32"','FHD','Smart','Satellite'],                       rating:4, reviews:27 },
+  { id:6,  category:'tvs',        brand:'LG',      name:'LG 43" LED UHD Smart Satellite 4K Television',          price:4599,  oldPrice:7099,  image:'https://compughana.com/cdn/shop/files/cashback_y24_lg2.jpg?v=1764749327&width=533',                                                                       badge:'sale', specs:['43"','4K UHD','Smart TV','Satellite'],                 rating:5, reviews:61 },
+  { id:9,  category:'tvs',        brand:'TCL',     name:'TCL QLED 43S5K 2K Smart Android Television',           price:4199,              image:'https://compughana.com/cdn/shop/files/lg_qled_125791.jpg?v=1764681446&width=533',                                                                              badge:null,   specs:['43"','QLED','2K','Android TV'],                        rating:4, reviews:29 },
+  { id:108,category:'tvs',        brand:'SAMSUNG', name:'SAMSUNG 43" LED FHD Smart Satellite Television',        price:5299,              image:'https://compughana.com/cdn/shop/files/lg_tv_524515.jpg?v=1764750146&width=533',                                                                               badge:null,   specs:['43"','FHD','Smart','Satellite'],                        rating:4, reviews:38 },
+  { id:109,category:'tvs',        brand:'LG',      name:'LG OLED 55B46LA 4K Smart AI TV + XBOOM Speaker',       price:17599, oldPrice:24699, image:'https://compughana.com/cdn/shop/files/project_55.jpg?v=1764749351&width=533',                                                                              badge:'sale', specs:['55"','OLED','4K AI','Bundled Speaker'],              rating:5, reviews:12 },
+  { id:110,category:'tvs',        brand:'SAMSUNG', name:'SAMSUNG 55" Crystal UHD Smart 4K Television',          price:9699,              image:'https://compughana.com/cdn/shop/files/lg_tv_524512.jpg?v=1764682088&width=533',                                                                                badge:null,   specs:['55"','Crystal UHD','4K Smart','Satellite'],            rating:4, reviews:26 },
+  { id:111,category:'tvs',        brand:'TCL',     name:'TCL 50" QLED PRO 50P7K 4K Smart Android Television',   price:8799,              image:'https://compughana.com/cdn/shop/files/lg_qled_8.jpg?v=1764681461&width=533',                                                                                   badge:null,   specs:['50"','QLED PRO','4K','Android TV'],                    rating:4, reviews:31 },
+  // Air Conditioners
+  { id:4,  category:'appliances', brand:'SIGMA',   name:'SIGMA 2.0 HP R410 Breeze Air Conditioner',             price:4099,  oldPrice:4999,  image:'https://compughana.com/cdn/shop/files/sigma-2.0hp-air-con-510x510_42cd3665-0557-49d8-801f-858b8e66f3ab.jpg?v=1767024361&width=533',                     badge:'sale', specs:['2.0 HP','R410','Split Unit','Remote'],                 rating:4, reviews:35 },
+  { id:11, category:'appliances', brand:'LG',      name:'LG DualCool Inverter 1.5HP Air Conditioner',           price:5999,  oldPrice:8199,  image:'https://compughana.com/cdn/shop/files/bts8.jpg?v=1764676004&width=533',                                                                                   badge:'sale', specs:['1.5 HP','Inverter','R410','DualCool'],               rating:5, reviews:47 },
+  { id:104,category:'appliances', brand:'SIGMA',   name:'SIGMA 1.5 HP Luxe Inverter R32 Air Conditioner',       price:3399,  oldPrice:4399,  image:'https://compughana.com/cdn/shop/files/Split-R32-Inverter-Luxe-Right_1000x_adbc65b3-97ac-4ded-b7df-0f6c55394658.webp?v=1767026285&width=533',            badge:'sale', specs:['1.5 HP','R32 Inverter','Luxe Series','Remote'],         rating:5, reviews:28 },
+  { id:105,category:'appliances', brand:'SIGMA',   name:'SIGMA AC Luxe 2.0 HP Inverter R32 Air Conditioner',    price:6399,  oldPrice:7799,  image:'https://compughana.com/cdn/shop/files/Split-R32-Inverter-Luxe-Right_1000x_019f6705-2e0b-4abb-95a0-04e2a04773bc.webp?v=1767024882&width=533',           badge:'sale', specs:['2.0 HP','R32 Inverter','Luxe Series','Timer'],           rating:5, reviews:16 },
+  { id:112,category:'appliances', brand:'TCL',     name:'TCL 2.5HP R410A Split Inverter Air Conditioner',       price:11399,             image:'https://compughana.com/cdn/shop/files/cash_back_tcl24_5.jpg?v=1764681026&width=533',                                                                           badge:null,   specs:['2.5 HP','R410A','Inverter','Split Unit'],              rating:4, reviews:17 },
+  // Fridges & Freezers
+  { id:1,  category:'appliances', brand:'SIGMA',   name:'SIGMA 93L Table Top Fridge – Gray',                    price:1299,  oldPrice:1499,  image:'https://compughana.com/cdn/shop/files/WP810-8.webp?v=1769427878&width=533',                                                                               badge:'sale', specs:['93L Capacity','Table Top','Gray','Energy Efficient'], rating:4, reviews:18 },
+  { id:7,  category:'appliances', brand:'LG',      name:'LG 143L Chest Freezer – Gray',                         price:2799,  oldPrice:4199,  image:'https://compughana.com/cdn/shop/files/Hikvision_camera_42.jpg?v=1771584831&width=533',                                                                    badge:'sale', specs:['143L','Chest Freezer','Gray','Low Noise'],             rating:4, reviews:19 },
+  { id:101,category:'appliances', brand:'SAMSUNG', name:'SAMSUNG 627L 3-Door Side By Side Fridge + Dispenser',  price:33099,             image:'https://compughana.com/cdn/shop/files/cyan37.avif?v=1770985075&width=533',                                                                                    badge:null,   specs:['627L','Side-by-Side','Water Dispenser','Black'],        rating:5, reviews:9  },
+  { id:103,category:'appliances', brand:'LG',      name:'LG 199L GN-Y331SLS Fridge',                            price:4099,  oldPrice:5499,  image:'https://compughana.com/cdn/shop/files/afric157.avif?v=1768388477&width=533',                                                                              badge:'sale', specs:['199L','Double Door','No Frost','Silver'],            rating:4, reviews:24 },
+  // Microwaves
+  { id:8,  category:'appliances', brand:'NASCO',   name:'NASCO 20LTR Solo Microwave',                           price:999,               image:'https://compughana.com/cdn/shop/files/prime_283.jpg?v=1764859495&width=533',                                                                                   badge:null,   specs:['20L','Solo','800W','5 Power Levels'],                  rating:4, reviews:38 },
+  { id:106,category:'appliances', brand:'MIDEA',   name:'MIDEA 25LTR Grill Microwave',                          price:1999,              image:'https://compughana.com/cdn/shop/files/2eid_fn03192_2.jpg?v=1764859359&width=533',                                                                               badge:null,   specs:['25L','Grill','900W','6 Programs'],                      rating:4, reviews:21 },
+  { id:107,category:'appliances', brand:'LG',      name:'LG 42L NeoChef™ Stainless Microwave with Grill Oven',  price:3099,  oldPrice:3999,  image:'https://compughana.com/cdn/shop/files/bto_lg61231.jpg?v=1764859152&width=533',                                                                            badge:'sale', specs:['42L','Smart Inverter','Grill Oven','S/Steel'],        rating:5, reviews:44 },
+  // Washing Machines
+  { id:12, category:'appliances', brand:'LG',      name:'LG 8KG AI DD™ Front Load Washing Machine – Black',     price:6799,  oldPrice:8899,  image:'https://compughana.com/cdn/shop/files/lg_qled_43.jpg?v=1764673130&width=533',                                                                             badge:'sale', specs:['8KG','Front Load','AI DD™','Matte Black'],           rating:5, reviews:32 },
+  // Air Coolers & Dispensers
+  { id:5,  category:'appliances', brand:'NASCO',   name:'NASCO 7L AC-0801R Air Cooler',                         price:999,               image:'https://compughana.com/cdn/shop/files/project_540.jpg?v=1764677670&width=533',                                                                                 badge:null,   specs:['7L Tank','3 Speeds','Remote','Timer'],                  rating:4, reviews:22 },
+  { id:10, category:'appliances', brand:'SIGMA',   name:'SIGMA 19L 3-Tap Cabinet Water Dispenser – Black',      price:999,   oldPrice:1099, image:'https://compughana.com/cdn/shop/files/lg_qled_13571708.jpg?v=1764680759&width=533',                                                                         badge:'sale', specs:['19L','3 Taps','Storage Cabinet','Black'],             rating:4, reviews:14 },
+  { id:102,category:'appliances', brand:'NASCO',   name:'Nasco 32" LED Digital Satellite Television',           price:1499,              image:'https://compughana.com/cdn/shop/files/sigma-2.0hp-air-con-5115.jpg?v=1768569131&width=533',                                                                    badge:null,   specs:['32"','LED','Digital','Satellite'],                      rating:4, reviews:33 },
 ];
 
+// ── Render ────────────────────────────────────────────────
 const grid = document.getElementById('productGrid');
-products.forEach(p => renderCard(p, grid));
 
-// ── Appliances (bottom section) ──────────────────────────
-const appliances = [
-  { id:101, brand:'SAMSUNG', name:'SAMSUNG 627L 3-Door Side By Side Fridge + Dispenser – Black', price:33099,             image:'https://compughana.com/cdn/shop/files/cyan37.avif?v=1770985075&width=533',                                                                                     badge:null,   specs:['627L','Side-by-Side','Water Dispenser','Black'],          rating:5, reviews:9  },
-  { id:102, brand:'NASCO',   name:'Nasco 32" LED Digital Satellite Television',                   price:1499,              image:'https://compughana.com/cdn/shop/files/sigma-2.0hp-air-con-5115.jpg?v=1768569131&width=533',                                                                    badge:null,   specs:['32"','LED','Digital','Satellite'],                        rating:4, reviews:33 },
-  { id:103, brand:'LG',      name:'LG 199L GN-Y331SLS Fridge',                                   price:4099, oldPrice:5499, image:'https://compughana.com/cdn/shop/files/afric157.avif?v=1768388477&width=533',                                                                                  badge:'sale', specs:['199L','Double Door','No Frost','Silver'],              rating:4, reviews:24 },
-  { id:104, brand:'SIGMA',   name:'SIGMA 1.5 HP Luxe Inverter R32 Air Conditioner',               price:3399, oldPrice:4399, image:'https://compughana.com/cdn/shop/files/Split-R32-Inverter-Luxe-Right_1000x_adbc65b3-97ac-4ded-b7df-0f6c55394658.webp?v=1767026285&width=533',              badge:'sale', specs:['1.5 HP','R32 Inverter','Luxe Series','Remote'],          rating:5, reviews:28 },
-  { id:105, brand:'SIGMA',   name:'SIGMA AC Luxe 2.0 HP Inverter R32 Air Conditioner',           price:6399, oldPrice:7799, image:'https://compughana.com/cdn/shop/files/Split-R32-Inverter-Luxe-Right_1000x_019f6705-2e0b-4abb-95a0-04e2a04773bc.webp?v=1767024882&width=533',               badge:'sale', specs:['2.0 HP','R32 Inverter','Luxe Series','Timer'],           rating:5, reviews:16 },
-  { id:106, brand:'MIDEA',   name:'MIDEA 25LTR Grill Microwave',                                 price:1999,              image:'https://compughana.com/cdn/shop/files/2eid_fn03192_2.jpg?v=1764859359&width=533',                                                                               badge:null,   specs:['25L','Grill','900W','6 Programs'],                        rating:4, reviews:21 },
-  { id:107, brand:'LG',      name:'LG 42L NeoChef™ Stainless Microwave with Grill Oven',         price:3099, oldPrice:3999, image:'https://compughana.com/cdn/shop/files/bto_lg61231.jpg?v=1764859152&width=533',                                                                                badge:'sale', specs:['42L','Smart Inverter','Grill Oven','S/Steel'],         rating:5, reviews:44 },
-  { id:108, brand:'SAMSUNG', name:'SAMSUNG 43" LED FHD Smart Satellite Television',               price:5299,              image:'https://compughana.com/cdn/shop/files/lg_tv_524515.jpg?v=1764750146&width=533',                                                                                badge:null,   specs:['43"','FHD','Smart','Satellite'],                          rating:4, reviews:38 },
-  { id:109, brand:'LG',      name:'LG OLED 55B46LA 4K Smart AI TV + XBOOM Speaker',              price:17599,oldPrice:24699,image:'https://compughana.com/cdn/shop/files/project_55.jpg?v=1764749351&width=533',                                                                                 badge:'sale', specs:['55"','OLED','4K AI','Bundled Speaker'],                rating:5, reviews:12 },
-  { id:110, brand:'SAMSUNG', name:'SAMSUNG 55" Crystal UHD Smart 4K Television',                 price:9699,              image:'https://compughana.com/cdn/shop/files/lg_tv_524512.jpg?v=1764682088&width=533',                                                                                badge:null,   specs:['55"','Crystal UHD','4K Smart','Satellite'],              rating:4, reviews:26 },
-  { id:111, brand:'TCL',     name:'TCL 50" QLED PRO 50P7K 4K Smart Android Television',          price:8799,              image:'https://compughana.com/cdn/shop/files/lg_qled_8.jpg?v=1764681461&width=533',                                                                                   badge:null,   specs:['50"','QLED PRO','4K','Android TV'],                      rating:4, reviews:31 },
-  { id:112, brand:'TCL',     name:'TCL 2.5HP R410A Split Inverter Air Conditioner',              price:11399,             image:'https://compughana.com/cdn/shop/files/cash_back_tcl24_5.jpg?v=1764681026&width=533',                                                                             badge:null,   specs:['2.5 HP','R410A','Inverter','Split Unit'],                rating:4, reviews:17 },
-];
+function renderGrid(filter) {
+  let filtered;
+  if (filter === 'all') {
+    filtered = allProducts;
+  } else if (filter === 'tvs') {
+    filtered = allProducts.filter(p => p.category === 'tvs');
+  } else if (filter === 'appliances') {
+    filtered = allProducts.filter(p => p.category === 'appliances');
+  } else if (filter === 'deals') {
+    filtered = allProducts.filter(p => p.badge === 'sale' || p.badge === 'hot');
+  } else {
+    // laptops, phones, accessories, printers — show empty state for now
+    filtered = [];
+  }
 
-const appGrid = document.getElementById('applianceGrid');
-appliances.forEach(p => renderCard(p, appGrid));
+  grid.innerHTML = '';
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 16px;display:block;opacity:0.4"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <p style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:6px;">Coming Soon</p>
+        <p style="font-size:0.9rem;">We're adding products to this category. Check back soon!</p>
+      </div>`;
+  } else {
+    filtered.forEach(p => { grid.innerHTML += makeCard(p); });
+  }
+
+  // Update result count
+  const rc = document.querySelector('.result-count');
+  if (rc) rc.innerHTML = `Showing <strong>1–${Math.min(filtered.length,12)}</strong> of <strong>${filtered.length}</strong> products`;
+}
+
+// Initial render — show all
+renderGrid('all');
+
+// ── Nav filtering ─────────────────────────────────────────
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    // Update active state
+    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+
+    const filter = this.dataset.filter;
+
+    // Show/hide appliance categories section
+    const appSection = document.querySelector('.appliances-section');
+    const mainSection = document.querySelector('.main');
+
+    if (filter === 'all') {
+      appSection.style.display = 'block';
+      mainSection.style.display = 'grid';
+      renderGrid('all');
+    } else if (filter === 'appliances') {
+      appSection.style.display = 'block';
+      mainSection.style.display = 'grid';
+      renderGrid('appliances');
+    } else if (filter === 'tvs') {
+      appSection.style.display = 'none';
+      mainSection.style.display = 'grid';
+      renderGrid('tvs');
+    } else if (filter === 'deals') {
+      appSection.style.display = 'none';
+      mainSection.style.display = 'grid';
+      renderGrid('deals');
+    } else {
+      appSection.style.display = 'none';
+      mainSection.style.display = 'grid';
+      renderGrid(filter);
+    }
+
+    // Update hero text
+    const heroH1 = document.querySelector('.collection-hero h1');
+    const heroP = document.querySelector('.collection-hero p');
+    const heroMap = {
+      all:        { h1: 'TVs, Microwaves & <span>Home Appliances</span>',   p: 'Northern Ghana's go-to store for quality electronics and home appliances at great prices.' },
+      tvs:        { h1: 'Televisions',                                       p: 'Smart TVs, 4K displays and more — from top brands like LG, Samsung & TCL.' },
+      appliances: { h1: 'Home <span>Appliances</span>',                      p: 'Fridges, washing machines, ACs, microwaves and more for your home.' },
+      laptops:    { h1: 'Laptops & <span>Computers</span>',                  p: 'Coming soon — premium laptops for work, school and beyond.' },
+      phones:     { h1: 'Smartphones & <span>Phones</span>',                 p: 'Coming soon — the latest smartphones at great prices.' },
+      accessories:{ h1: 'Accessories',                                       p: 'Coming soon — cables, chargers, cases and more.' },
+      printers:   { h1: 'Printers & <span>Scanners</span>',                  p: 'Coming soon — office and home printing solutions.' },
+      deals:      { h1: '🔥 Hot <span>Deals</span>',                         p: 'Our best sale prices — grab them before they're gone!' },
+    };
+    if (heroMap[filter]) {
+      heroH1.innerHTML = heroMap[filter].h1;
+      heroP.textContent = heroMap[filter].p;
+    }
+
+    // Scroll to top of page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ── Search ────────────────────────────────────────────────
+document.querySelector('.search-bar input').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (!q) { renderGrid('all'); return; }
+  const results = allProducts.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.brand.toLowerCase().includes(q) ||
+    p.specs.some(s => s.toLowerCase().includes(q))
+  );
+  grid.innerHTML = '';
+  if (results.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);font-family:'Syne',sans-serif;">No products found for "<strong>${this.value}</strong>"</div>`;
+  } else {
+    results.forEach(p => { grid.innerHTML += makeCard(p); });
+  }
+});
 
 // ── Pagination ───────────────────────────────────────────
 document.querySelectorAll('.page-btn').forEach(btn => {
