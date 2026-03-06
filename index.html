@@ -907,22 +907,23 @@
   }
 
   .drawer-nav {
-    padding: 16px 0;
+    padding: 8px 0;
     flex: 1;
+    overflow-y: auto;
   }
 
   .drawer-nav a {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 14px 20px;
+    gap: 12px;
+    padding: 10px 20px;
     text-decoration: none;
     color: var(--text);
     font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     font-weight: 600;
     border-left: 3px solid transparent;
-    transition: all 0.2s;
+    transition: all 0.18s;
   }
 
   .drawer-nav a:hover, .drawer-nav a.active {
@@ -1539,7 +1540,18 @@
   .ap-status-badge.confirmed { background:#dbeafe; color:#1e40af; }
   .ap-status-badge.delivered { background:#ecfdf5; color:#065f46; }
 
-  .ap-empty { text-align:center; padding:40px 20px; color:#94a3b8; }
+  /* Image upload box */
+  .ap-img-upload-box {
+    border: 2px dashed #cbd5e1; border-radius: 10px;
+    padding: 24px; text-align: center; cursor: pointer;
+    background: #f8fafc; transition: all 0.18s;
+    min-height: 90px; display: flex; align-items: center;
+    justify-content: center;
+  }
+  .ap-img-upload-box:hover { border-color: #1a56db; background: #eff6ff; }
+  .ap-img-upload-box.has-image { padding: 10px; border-style: solid; border-color: #1a56db; }
+
+
   .ap-empty svg { margin-bottom:12px; }
   .ap-loading { text-align:center; padding:40px; color:#94a3b8; font-size:0.85rem; }
 
@@ -1627,58 +1639,95 @@
     </button>
   </div>
   <nav class="drawer-nav">
+
     <a href="#" data-filter="all" class="active">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Home
     </a>
-    <a href="#" data-filter="tvs">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-      Televisions
-    </a>
-    <a href="#" data-filter="appliances">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
-      Home Appliances
-    </a>
-    <a href="#" data-filter="sound">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      Sound Systems
-    </a>
-    <a href="#" data-filter="fans">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.5-1 3.5L12 12"/><path d="M22 12a4 4 0 0 1-4 4c-1.5 0-2.5-.5-3.5-1L12 12"/><path d="M12 22a4 4 0 0 1-4-4c0-1.5.5-2.5 1-3.5L12 12"/><path d="M2 12a4 4 0 0 1 4-4c1.5 0 2.5.5 3.5 1L12 12"/></svg>
-      Fans (Ceiling & Standing)
-    </a>
-    <a href="#" data-filter="satellite">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
-      Satellite & Decoders
-    </a>
-    <a href="#" data-filter="heaters">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2c0 0-5 4-5 9a5 5 0 0 0 10 0c0-5-5-9-5-9z"/></svg>
-      Heater Cups
-    </a>
-    <a href="#" data-filter="kitchen">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
-      Kitchen Appliances
-    </a>
-    <a href="#" data-filter="lighting">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="6"/><path d="M12 6a6 6 0 0 1 6 6c0 2.22-1.2 4.15-3 5.19V19a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.81A6.001 6.001 0 0 1 6 12a6 6 0 0 1 6-6z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
-      Bulbs & Street Lights
-    </a>
-    <a href="#" data-filter="tech">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="4" height="6" rx="1"/><path d="M7 13h10"/><rect x="17" y="11" width="4" height="6" rx="1"/></svg>
-      Pen Drives & Tech
-    </a>
-    <a href="#" data-filter="sewing">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 10"/><circle cx="19" cy="5" r="2"/></svg>
-      Sewing Machines
-    </a>
-    <a href="#" data-filter="others">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></svg>
-      Others
-    </a>
+
     <a href="#" data-filter="deals">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
       🔥 Deals
     </a>
+
+    <div style="padding:6px 16px 2px;font-size:0.67rem;font-weight:800;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase;">Electronics</div>
+
+    <a href="#" data-filter="tvs">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+      Televisions
+    </a>
+
+    <a href="#" data-filter="sound">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      Sound Systems
+    </a>
+
+    <a href="#" data-filter="satellite">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+      Satellite & Decoders
+    </a>
+
+    <a href="#" data-filter="tech">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="6" width="8" height="12" rx="1"/><path d="M10 9h4l4 3-4 3h-4"/><circle cx="6" cy="18" r="0"/></svg>
+      Pen Drives & Tech
+    </a>
+
+    <div style="padding:6px 16px 2px;font-size:0.67rem;font-weight:800;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase;">Home Appliances</div>
+
+    <a href="#" data-filter="appliances">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="12" y2="9"/></svg>
+      Fridges, ACs & More
+    </a>
+
+    <a href="#" data-filter="ceiling_fans">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.5 2.5-1 3.5L12 12"/><path d="M22 12a4 4 0 0 1-4 4c-1.5 0-2.5-.5-3.5-1L12 12"/><path d="M12 22a4 4 0 0 1-4-4c0-1.5.5-2.5 1-3.5L12 12"/><path d="M2 12a4 4 0 0 1 4-4c1.5 0 2.5.5 3.5 1L12 12"/></svg>
+      Ceiling Fans
+    </a>
+
+    <a href="#" data-filter="standing_fans">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><line x1="12" y1="11" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+      Standing Fans
+    </a>
+
+    <a href="#" data-filter="heaters">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2c0 0-5 4-5 9a5 5 0 0 0 10 0c0-5-5-9-5-9z"/><line x1="12" y1="16" x2="12" y2="21"/></svg>
+      Heater Cups
+    </a>
+
+    <div style="padding:6px 16px 2px;font-size:0.67rem;font-weight:800;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase;">Kitchen</div>
+
+    <a href="#" data-filter="blenders">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2h12l-2 8H8L6 2z"/><path d="M8 10l-2 8h12l-2-8"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+      Blenders
+    </a>
+
+    <a href="#" data-filter="burners">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="18" rx="8" ry="2"/><path d="M8 18V9a4 4 0 0 1 8 0v9"/><path d="M9 6c0-1 .5-2 1.5-2.5S12 2 12 2s.5 1 1.5 1.5S15 5 15 6"/></svg>
+      Gas Burners
+    </a>
+
+    <a href="#" data-filter="kitchen">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg>
+      Rice Cookers
+    </a>
+
+    <div style="padding:6px 16px 2px;font-size:0.67rem;font-weight:800;color:#94a3b8;letter-spacing:0.08em;text-transform:uppercase;">Other Categories</div>
+
+    <a href="#" data-filter="lighting">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.62-1.4 4.9-3.5 6.19V17a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1.81A7.001 7.001 0 0 1 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+      Bulbs & Street Lights
+    </a>
+
+    <a href="#" data-filter="sewing">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8l-6-6H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/><path d="M14 2v6h6"/><circle cx="10" cy="14" r="2"/><path d="M12 14h4l2 4H8l2-4h2z"/></svg>
+      Sewing Machines
+    </a>
+
+    <a href="#" data-filter="others">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></svg>
+      Others
+    </a>
+
   </nav>
   <div class="drawer-footer">
     📍 Northern Region, Ghana<br>
@@ -2233,8 +2282,20 @@ let allProducts = [];
 async function loadProducts() {
   const grid = document.getElementById('productGrid');
   if (grid) grid.innerHTML = '<div style="padding:60px;text-align:center;color:#888;"><svg width="40" height="40" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p style="margin-top:12px;">Loading products…</p></div>';
+
+  // Detect local file — Supabase won't work without HTTPS
+  const isLocal = location.protocol === 'file:';
+  if (isLocal) {
+    showLocalBanner();
+    allProducts = [...staticProducts];
+    renderGrid('all');
+    renderFeatured();
+    return;
+  }
+
   try {
     const rows = await sbFetch('products', 'select=*&order=id.asc&in_stock=eq.true');
+    if (!rows || !rows.length) throw new Error('Empty response');
     allProducts = rows.map(p => ({
       id:       p.id,
       category: p.category,
@@ -2242,7 +2303,7 @@ async function loadProducts() {
       name:     p.name,
       price:    Number(p.price),
       oldPrice: p.old_price ? Number(p.old_price) : null,
-      image:    p.image || 'https://via.placeholder.com/300x300?text=No+Image',
+      image:    p.image || 'https://placehold.co/300x300?text=No+Image',
       badge:    p.badge,
       specs:    p.specs || [],
       rating:   p.rating,
@@ -2255,6 +2316,18 @@ async function loadProducts() {
   }
   renderGrid('all');
   renderFeatured();
+}
+
+function showLocalBanner() {
+  const banner = document.createElement('div');
+  banner.id = 'localBanner';
+  banner.innerHTML = `
+    <div style="background:#fef3c7;border-bottom:2px solid #f59e0b;padding:10px 20px;display:flex;align-items:center;gap:12px;font-family:'DM Sans',sans-serif;font-size:0.83rem;color:#92400e;position:sticky;top:58px;z-index:99;">
+      <svg width="18" height="18" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span><strong>Preview mode</strong> — You're opening this file locally. Push to GitHub so the live site loads products from the database. Products shown below are the offline backup.</span>
+      <button onclick="document.getElementById('localBanner').remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:1.1rem;color:#92400e;">✕</button>
+    </div>`;
+  document.body.insertBefore(banner, document.body.children[1]);
 }
 
 // ── Render ────────────────────────────────────────────────
@@ -2542,7 +2615,48 @@ async function sbAdmin(method, table, body=null, params='') {
   return text ? JSON.parse(text) : [];
 }
 
-// ── PANEL OPEN/CLOSE ─────────────────────────────────
+// ── IMAGE UPLOAD HELPERS ─────────────────────────────────
+function apHandleImageFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    apSetImagePreview(e.target.result);
+    document.getElementById('apFImage').value = e.target.result; // base64
+    document.getElementById('apFImageUrl').value = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+function apHandleImageUrl(url) {
+  if (url.startsWith('http')) {
+    apSetImagePreview(url);
+    document.getElementById('apFImage').value = url;
+  }
+}
+
+function apSetImagePreview(src) {
+  const box = document.getElementById('apImgUploadBox');
+  const preview = document.getElementById('apImgPreview');
+  const previewWrap = document.getElementById('apImgPreviewWrap');
+  const placeholder = document.getElementById('apImgPlaceholder');
+  preview.src = src;
+  previewWrap.style.display = 'block';
+  placeholder.style.display = 'none';
+  box.classList.add('has-image');
+}
+
+function apClearImage() {
+  document.getElementById('apFImage').value = '';
+  document.getElementById('apFImageUrl').value = '';
+  document.getElementById('apFImageFile').value = '';
+  document.getElementById('apImgPreview').src = '';
+  document.getElementById('apImgPreviewWrap').style.display = 'none';
+  document.getElementById('apImgPlaceholder').style.display = 'block';
+  document.getElementById('apImgUploadBox').classList.remove('has-image');
+}
+
+
 let apLoaded = { products:false, orders:false, promotions:false };
 
 function openAdminPanel() {
@@ -2651,12 +2765,13 @@ function apFilterProducts(q, cat='') {
 function apShowAddForm() {
   document.getElementById('apFormTitle').textContent = 'Add New Product';
   document.getElementById('apFormId').value = '';
-  ['apFName','apFBrand','apFImage','apFSpecs'].forEach(id => document.getElementById(id).value = '');
+  ['apFName','apFBrand','apFSpecs'].forEach(id => document.getElementById(id).value = '');
   ['apFPrice','apFOldPrice'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('apFRating').value = 4;
   document.getElementById('apFReviews').value = 0;
   document.getElementById('apFBadge').value = '';
   document.getElementById('apFCat').value = 'tvs';
+  apClearImage();
   document.getElementById('apProductForm').style.display = 'block';
   document.getElementById('apProductForm').scrollIntoView({behavior:'smooth'});
 }
@@ -2677,6 +2792,8 @@ function apEditProduct(id) {
   document.getElementById('apFOldPrice').value = p.old_price || '';
   document.getElementById('apFBadge').value    = p.badge || '';
   document.getElementById('apFImage').value    = p.image || '';
+  document.getElementById('apFImageUrl').value = p.image && p.image.startsWith('http') ? p.image : '';
+  if (p.image) apSetImagePreview(p.image); else apClearImage();
   document.getElementById('apFSpecs').value    = (p.specs||[]).join(', ');
   document.getElementById('apFRating').value   = p.rating;
   document.getElementById('apFReviews').value  = p.reviews;
@@ -2984,7 +3101,30 @@ async function apDeletePromo(id, title) {
         <div><label>Badge</label>
           <select id="apFBadge"><option value="">None</option><option value="sale">Sale</option><option value="new">New</option><option value="hot">Hot</option></select>
         </div>
-        <div class="ap-form-full"><label>Image URL</label><input id="apFImage" placeholder="https://… (leave blank to use placeholder)"></div>
+        <div class="ap-form-full">
+          <label>Product Image</label>
+          <div class="ap-img-upload-box" id="apImgUploadBox" onclick="document.getElementById('apFImageFile').click()">
+            <div id="apImgPreviewWrap" style="display:none;position:relative;">
+              <img id="apImgPreview" src="" alt="Preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;">
+              <button type="button" onclick="event.stopPropagation();apClearImage()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+            <div id="apImgPlaceholder">
+              <svg width="32" height="32" fill="none" stroke="#94a3b8" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              <p style="margin:8px 0 4px;font-weight:700;color:#475569;font-size:0.85rem;">Click to upload or take photo</p>
+              <p style="margin:0;color:#94a3b8;font-size:0.75rem;">JPG, PNG, WEBP — from files or camera</p>
+            </div>
+          </div>
+          <!-- Hidden inputs -->
+          <input type="file" id="apFImageFile" accept="image/*" capture="environment" style="display:none" onchange="apHandleImageFile(this)">
+          <input type="hidden" id="apFImage">
+          <!-- Manual URL fallback -->
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+            <span style="font-size:0.72rem;color:#94a3b8;white-space:nowrap;">or paste image URL</span>
+            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+          </div>
+          <input type="text" id="apFImageUrl" placeholder="https://…" style="width:100%;margin-top:8px;padding:8px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.82rem;box-sizing:border-box;outline:none;" oninput="apHandleImageUrl(this.value)" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
+        </div>
         <div class="ap-form-full"><label>Specs (comma-separated)</label><input id="apFSpecs" placeholder='e.g. 43",4K UHD,Smart,Satellite'></div>
         <div><label>Rating (1–5)</label><input id="apFRating" type="number" min="1" max="5" value="4"></div>
         <div><label>Reviews count</label><input id="apFReviews" type="number" value="0"></div>
