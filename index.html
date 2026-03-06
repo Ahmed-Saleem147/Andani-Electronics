@@ -1586,7 +1586,7 @@
       <div class="icon-btn" id="adminLoginBtn" title="Admin Login" style="cursor:pointer;" onclick="openAdminModal()">
         <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
-      <div class="icon-btn cart-btn" id="cartIconBtn" style="position:relative;cursor:pointer;">
+      <div class="icon-btn cart-btn" id="cartIconBtn" style="position:relative;cursor:pointer;" onclick="openCart()">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         <span class="cart-badge" id="cartBadge" style="display:none">0</span>
       </div>
@@ -1763,7 +1763,7 @@
       </a>
     </li>
     <li>
-      <a href="#" id="bottomCart">
+      <a href="#" id="bottomCart" onclick="event.preventDefault();openCart()">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         <span class="mobile-cart-badge" id="mobileCartBadge">0</span>
         Cart
@@ -1972,59 +1972,27 @@
 <div class="main">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebarAside">
+
+    <div class="filter-group">
+      <h3>Category <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
+      <div class="filter-options" id="sidebarCategories">
+        <label class="filter-option"><input type="radio" name="sidecat" value="all" checked onchange="applyFilter('all')"> All Products <span class="filter-count" id="scCount-all">–</span></label>
+      </div>
+    </div>
 
     <div class="filter-group">
       <h3>Brand <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
-      <div class="filter-options">
-        <label class="filter-option"><input type="checkbox" checked> LG <span class="filter-count">42</span></label>
-        <label class="filter-option"><input type="checkbox"> SAMSUNG <span class="filter-count">42</span></label>
-        <label class="filter-option"><input type="checkbox"> TCL <span class="filter-count">55</span></label>
-        <label class="filter-option"><input type="checkbox"> SIGMA <span class="filter-count">11</span></label>
-        <label class="filter-option"><input type="checkbox"> NASCO <span class="filter-count">18</span></label>
-        <label class="filter-option"><input type="checkbox"> MIDEA <span class="filter-count">9</span></label>
-        <label class="filter-option"><input type="checkbox"> BLUTEK <span class="filter-count">6</span></label>
-      </div>
+      <div class="filter-options" id="sidebarBrands"></div>
     </div>
 
     <div class="filter-group">
       <h3>Price Range <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
       <div class="price-range">
         <div class="price-inputs">
-          <input type="number" placeholder="Min GH₵">
-          <input type="number" placeholder="Max GH₵">
+          <input type="number" id="priceMin" placeholder="Min GH₵" oninput="applyPriceFilter()">
+          <input type="number" id="priceMax" placeholder="Max GH₵" oninput="applyPriceFilter()">
         </div>
-        <button class="apply-btn">Apply Filter</button>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <h3>Category <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
-      <div class="filter-options">
-        <label class="filter-option"><input type="checkbox" checked> Televisions <span class="filter-count">89</span></label>
-        <label class="filter-option"><input type="checkbox"> Air Conditioners <span class="filter-count">54</span></label>
-        <label class="filter-option"><input type="checkbox"> Refrigerators <span class="filter-count">48</span></label>
-        <label class="filter-option"><input type="checkbox"> Microwaves <span class="filter-count">32</span></label>
-        <label class="filter-option"><input type="checkbox"> Washing Machines <span class="filter-count">28</span></label>
-        <label class="filter-option"><input type="checkbox"> Water Dispensers <span class="filter-count">17</span></label>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <h3>Screen Size <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
-      <div class="filter-options">
-        <label class="filter-option"><input type="checkbox"> 32" & Under <span class="filter-count">34</span></label>
-        <label class="filter-option"><input type="checkbox" checked> 43" – 50" <span class="filter-count">41</span></label>
-        <label class="filter-option"><input type="checkbox"> 55" – 65" <span class="filter-count">29</span></label>
-        <label class="filter-option"><input type="checkbox"> 70" & Above <span class="filter-count">12</span></label>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <h3>Availability <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></h3>
-      <div class="filter-options">
-        <label class="filter-option"><input type="checkbox" checked> In Stock <span class="filter-count">86</span></label>
-        <label class="filter-option"><input type="checkbox"> Pre-order <span class="filter-count">5</span></label>
       </div>
     </div>
 
@@ -2316,6 +2284,7 @@ async function loadProducts() {
   }
   renderGrid('all');
   renderFeatured();
+  buildSidebar();
 }
 
 function showLocalBanner() {
@@ -2333,20 +2302,16 @@ function showLocalBanner() {
 // ── Render ────────────────────────────────────────────────
 const grid = document.getElementById('productGrid');
 
-function renderGrid(filter) {
+function renderGrid(filter, preFiltered) {
   let filtered;
-  if (filter === 'all') {
+  if (preFiltered) {
+    filtered = preFiltered;
+  } else if (!filter || filter === 'all') {
     filtered = allProducts;
-  } else if (filter === 'tvs') {
-    filtered = allProducts.filter(p => p.category === 'tvs');
-  } else if (filter === 'appliances') {
-    filtered = allProducts.filter(p => p.category === 'appliances');
   } else if (filter === 'deals') {
     filtered = allProducts.filter(p => p.badge === 'sale' || p.badge === 'hot');
-  } else if (['sound','ceiling_fans','standing_fans','satellite','heaters','kitchen','blenders','burners','tech','lighting','sewing','others'].includes(filter)) {
-    filtered = allProducts.filter(p => p.category === filter);
   } else {
-    filtered = [];
+    filtered = allProducts.filter(p => p.category === filter);
   }
 
   grid.innerHTML = '';
@@ -2354,8 +2319,8 @@ function renderGrid(filter) {
     grid.innerHTML = `
       <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">
         <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 16px;display:block;opacity:0.4"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        <p style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:6px;">Coming Soon</p>
-        <p style="font-size:0.9rem;">We're adding products to this category. Check back soon!</p>
+        <p style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:6px;">No products found</p>
+        <p style="font-size:0.9rem;">Try a different filter or check back soon.</p>
       </div>`;
   } else {
     filtered.forEach(p => { grid.innerHTML += makeCard(p); });
@@ -2363,7 +2328,7 @@ function renderGrid(filter) {
 
   // Update result count
   const rc = document.querySelector('.result-count');
-  if (rc) rc.innerHTML = `Showing <strong>1–${Math.min(filtered.length,12)}</strong> of <strong>${filtered.length}</strong> products`;
+  if (rc) rc.innerHTML = `Showing <strong>${filtered.length}</strong> products`;
 }
 
 // Initial render — load from Supabase
@@ -2493,23 +2458,312 @@ document.querySelectorAll('.mobile-bottom-nav a[data-filter]').forEach(link => {
   });
 });
 
-// ── Cart badge sync ───────────────────────────────────────
+// ══════════════════════════════════════════════════════
+//  CART SYSTEM
+// ══════════════════════════════════════════════════════
+let cartItems = []; // [{id, name, price, image, qty}]
+
 function addToCart(id) {
+  const p = allProducts.find(x => x.id === id);
+  if (!p) return;
+  const existing = cartItems.find(x => x.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cartItems.push({ id: p.id, name: p.name, price: p.price, image: p.image, qty: 1 });
+  }
+  updateCartBadge();
+  renderCartItems();
+  // Quick visual feedback
+  apToast(`✅ ${p.name.substring(0,30)}… added to cart`);
+}
+
+function removeFromCart(id) {
+  cartItems = cartItems.filter(x => x.id !== id);
+  updateCartBadge();
+  renderCartItems();
+}
+
+function changeQty(id, delta) {
+  const item = cartItems.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) removeFromCart(id);
+  else { updateCartBadge(); renderCartItems(); }
+}
+
+function clearCart() {
+  cartItems = [];
+  updateCartBadge();
+  renderCartItems();
+}
+
+function cartTotal() {
+  return cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+}
+
+function updateCartBadge() {
+  const total = cartItems.reduce((s, i) => s + i.qty, 0);
   const badge = document.querySelector('.cart-badge');
   const mobileBadge = document.getElementById('mobileCartBadge');
-  const current = parseInt(badge.textContent) || 0;
-  const newCount = current + 1;
+  const drawerCount = document.getElementById('cartItemCount');
+  [badge, mobileBadge, drawerCount].forEach(el => {
+    if (!el) return;
+    el.textContent = total;
+    el.style.display = total > 0 ? 'flex' : 'none';
+  });
+  if (badge) { badge.style.transform='scale(1.4)'; setTimeout(()=>badge.style.transform='scale(1)',200); }
+}
 
-  badge.textContent = newCount;
-  badge.style.display = 'flex';
-  badge.style.transform = 'scale(1.4)';
-  setTimeout(() => badge.style.transform = 'scale(1)', 200);
+function renderCartItems() {
+  const list = document.getElementById('cartItemsList');
+  const footer = document.getElementById('cartFooter');
+  const subtotal = document.getElementById('cartSubtotal');
+  if (!list) return;
 
-  if (mobileBadge) {
-    mobileBadge.textContent = newCount;
-    mobileBadge.style.display = 'flex';
+  if (!cartItems.length) {
+    list.innerHTML = `
+      <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+        <svg width="48" height="48" fill="none" stroke="#e2e8f0" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:14px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <p style="font-family:'Syne',sans-serif;font-weight:700;margin:0 0 6px;color:#475569;">Your cart is empty</p>
+        <p style="font-size:0.8rem;margin:0;">Add products to get started</p>
+      </div>`;
+    if (footer) footer.style.display = 'none';
+    return;
+  }
+
+  list.innerHTML = cartItems.map(item => `
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9;align-items:center;">
+      <img src="${item.image || 'https://placehold.co/60x60?text=?'}" onerror="this.src='https://placehold.co/60x60?text=?'" style="width:58px;height:58px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;flex-shrink:0;">
+      <div style="flex:1;min-width:0;">
+        <p style="margin:0 0 4px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${item.name}</p>
+        <p style="margin:0;font-family:'Syne',sans-serif;font-weight:800;font-size:0.88rem;color:#1a56db;">GH₵${(item.price * item.qty).toLocaleString()}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
+        <button onclick="removeFromCart(${item.id})" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:0.9rem;padding:0;line-height:1;">✕</button>
+        <div style="display:flex;align-items:center;gap:0;border:1.5px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+          <button onclick="changeQty(${item.id},-1)" style="width:28px;height:28px;border:none;background:#f8fafc;cursor:pointer;font-size:1rem;font-weight:700;color:#475569;">−</button>
+          <span style="width:28px;text-align:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;">${item.qty}</span>
+          <button onclick="changeQty(${item.id},1)" style="width:28px;height:28px;border:none;background:#f8fafc;cursor:pointer;font-size:1rem;font-weight:700;color:#475569;">+</button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  if (footer) footer.style.display = 'block';
+  if (subtotal) subtotal.textContent = 'GH₵' + cartTotal().toLocaleString();
+}
+
+function openCart() {
+  renderCartItems();
+  document.getElementById('cartDrawer').style.right = '0';
+  document.getElementById('cartBackdrop').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartDrawer').style.right = '-420px';
+  document.getElementById('cartBackdrop').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════════════════════════
+//  CHECKOUT FLOW
+// ══════════════════════════════════════════════════════
+let selectedPayment = '';
+
+function openCheckout() {
+  if (!cartItems.length) { apToast('Your cart is empty!','error'); return; }
+  closeCart();
+  document.getElementById('checkoutOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  coGoStep1();
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function checkoutOverlayClick(e) {
+  if (e.target === document.getElementById('checkoutOverlay')) closeCheckout();
+}
+
+function setCoStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('coStep'+i).style.display = i===n ? 'block' : 'none';
+    const tab = document.querySelector(`.co-step[data-step="${i}"]`);
+    if (tab) {
+      tab.style.color    = i===n ? '#1a56db' : '#94a3b8';
+      tab.style.borderBottomColor = i===n ? '#1a56db' : 'transparent';
+    }
+  });
+}
+
+function coGoStep1() { setCoStep(1); }
+
+function coGoStep2() {
+  const name = document.getElementById('coName').value.trim();
+  const phone = document.getElementById('coPhone').value.trim();
+  const loc  = document.getElementById('coLocation').value.trim();
+  if (!name || !phone || !loc) { apToast('Please fill in all required fields.','error'); return; }
+  setCoStep(2);
+}
+
+function coGoStep3() {
+  if (!selectedPayment) { apToast('Please choose a payment method.','error'); return; }
+  // Build summary
+  const summaryItems = document.getElementById('coSummaryItems');
+  const summaryDets  = document.getElementById('coSummaryDetails');
+  const finalTotal   = document.getElementById('coFinalTotal');
+  summaryItems.innerHTML = cartItems.map(i => `
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e2e8f0;font-family:'DM Sans',sans-serif;font-size:0.82rem;">
+      <span>${i.name.substring(0,36)}${i.name.length>36?'…':''} ×${i.qty}</span>
+      <span style="font-weight:700;white-space:nowrap;margin-left:8px;">GH₵${(i.price*i.qty).toLocaleString()}</span>
+    </div>`).join('');
+  const payLabels = { momo:'Mobile Money', cash:'Cash on Delivery', whatsapp:'WhatsApp Order' };
+  summaryDets.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Name:</span><strong>${document.getElementById('coName').value}</strong></div>
+      <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Phone:</span><strong>${document.getElementById('coPhone').value}</strong></div>
+      <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Location:</span><strong>${document.getElementById('coLocation').value}</strong></div>
+      <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Payment:</span><strong>${payLabels[selectedPayment]||selectedPayment}</strong></div>
+    </div>`;
+  finalTotal.textContent = 'GH₵' + cartTotal().toLocaleString();
+  setCoStep(3);
+}
+
+function selectPayment(method) {
+  selectedPayment = method;
+  ['momo','cash','whatsapp'].forEach(m => {
+    const el = document.getElementById('pm'+m.charAt(0).toUpperCase()+m.slice(1));
+    const check = document.getElementById('pm'+m.charAt(0).toUpperCase()+m.slice(1)+'Check');
+    if (el) el.style.borderColor = m===method ? '#1a56db' : '#e2e8f0';
+    if (check) {
+      check.style.background    = m===method ? '#1a56db' : '';
+      check.style.borderColor   = m===method ? '#1a56db' : '#cbd5e1';
+    }
+  });
+  document.getElementById('momoDetails').style.display = method==='momo' ? 'block' : 'none';
+}
+
+async function placeOrder() {
+  const btn = document.getElementById('placeOrderBtn');
+  btn.textContent = 'Placing order…';
+  btn.disabled = true;
+
+  const name     = document.getElementById('coName').value.trim();
+  const phone    = document.getElementById('coPhone').value.trim();
+  const location = document.getElementById('coLocation').value.trim();
+  const notes    = document.getElementById('coNotes').value.trim();
+  const total    = cartTotal();
+  const items    = cartItems.map(i => ({id:i.id, name:i.name, price:i.price, qty:i.qty}));
+
+  // Save to Supabase
+  try {
+    await sbPost('orders', {
+      customer_name: name, customer_phone: phone,
+      customer_location: location,
+      items, total, status:'pending',
+      notes: `Payment: ${selectedPayment}${notes ? ' | '+notes : ''}`
+    });
+  } catch(e) { console.warn('Order save failed (offline?):', e); }
+
+  // Send WhatsApp message to store
+  const itemLines = items.map(i => `• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
+  const payLabels = { momo:'Mobile Money', cash:'Cash on Delivery', whatsapp:'WhatsApp Order' };
+  const msg = `🛒 *New Order — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* ${payLabels[selectedPayment]||selectedPayment}${notes?'\n*Notes:* '+notes:''}\n\n_Sent from andanielectronics.com_`;
+  window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+
+  // Reset
+  clearCart();
+  closeCheckout();
+  selectedPayment = '';
+  ['coName','coPhone','coLocation','coNotes'].forEach(id => document.getElementById(id).value='');
+  btn.textContent = '✓ Place Order';
+  btn.disabled = false;
+  apToast('🎉 Order placed! Check WhatsApp for confirmation.');
+}
+
+// ══════════════════════════════════════════════════════
+//  DYNAMIC SIDEBAR BUILDER
+// ══════════════════════════════════════════════════════
+const CAT_LABELS = {
+  all:'All Products', tvs:'Televisions', appliances:'Home Appliances',
+  sound:'Sound Systems', ceiling_fans:'Ceiling Fans', standing_fans:'Standing Fans',
+  satellite:'Satellite & Decoders', heaters:'Heater Cups', blenders:'Blenders',
+  burners:'Gas Burners', kitchen:'Rice Cookers', lighting:'Bulbs & Lighting',
+  tech:'Pen Drives & Tech', sewing:'Sewing Machines', others:'Others'
+};
+let activeSidebarCat = 'all';
+let activeSidebarBrands = new Set();
+let sidebarPriceMin = null, sidebarPriceMax = null;
+
+function buildSidebar() {
+  // Count per category
+  const catCounts = {};
+  const brandCounts = {};
+  allProducts.forEach(p => {
+    catCounts[p.category] = (catCounts[p.category]||0) + 1;
+    brandCounts[p.brand]  = (brandCounts[p.brand]||0) + 1;
+  });
+  catCounts['all'] = allProducts.length;
+
+  // Categories
+  const catEl = document.getElementById('sidebarCategories');
+  if (catEl) {
+    catEl.innerHTML = Object.entries(catCounts)
+      .sort((a,b) => b[1]-a[1])
+      .map(([cat, count]) => `
+        <label class="filter-option" style="cursor:pointer;">
+          <input type="radio" name="sidecat" value="${cat}" ${cat===activeSidebarCat?'checked':''} onchange="sidebarSetCat('${cat}')">
+          ${CAT_LABELS[cat]||cat}
+          <span class="filter-count">${count}</span>
+        </label>`).join('');
+  }
+
+  // Brands
+  const brandEl = document.getElementById('sidebarBrands');
+  if (brandEl) {
+    brandEl.innerHTML = Object.entries(brandCounts)
+      .sort((a,b) => b[1]-a[1])
+      .map(([brand, count]) => `
+        <label class="filter-option" style="cursor:pointer;">
+          <input type="checkbox" ${activeSidebarBrands.has(brand)?'checked':''} onchange="sidebarToggleBrand('${brand}',this.checked)">
+          ${brand}
+          <span class="filter-count">${count}</span>
+        </label>`).join('');
   }
 }
+
+function sidebarSetCat(cat) {
+  activeSidebarCat = cat;
+  activeSidebarBrands.clear();
+  applySidebarFilters();
+  buildSidebar();
+}
+
+function sidebarToggleBrand(brand, checked) {
+  if (checked) activeSidebarBrands.add(brand);
+  else activeSidebarBrands.delete(brand);
+  applySidebarFilters();
+}
+
+function applyPriceFilter() {
+  sidebarPriceMin = parseFloat(document.getElementById('priceMin').value) || null;
+  sidebarPriceMax = parseFloat(document.getElementById('priceMax').value) || null;
+  applySidebarFilters();
+}
+
+function applySidebarFilters() {
+  let filtered = allProducts;
+  if (activeSidebarCat !== 'all') filtered = filtered.filter(p => p.category === activeSidebarCat);
+  if (activeSidebarBrands.size > 0) filtered = filtered.filter(p => activeSidebarBrands.has(p.brand));
+  if (sidebarPriceMin) filtered = filtered.filter(p => p.price >= sidebarPriceMin);
+  if (sidebarPriceMax) filtered = filtered.filter(p => p.price <= sidebarPriceMax);
+  renderGrid(null, filtered);
+}
+
+
 
 // ── Pagination ───────────────────────────────────────────
 document.querySelectorAll('.page-btn').forEach(btn => {
@@ -2843,6 +3097,7 @@ async function apDeleteProduct(id, name) {
         apLoaded.products = false;
         await apLoadProducts();
         await loadProducts();
+        buildSidebar();
         apToast('🗑️ Product deleted successfully.');
       } catch(e) {
         apToast('❌ Error deleting product: ' + e.message, 'error');
@@ -3250,7 +3505,170 @@ document.getElementById('apConfirmOverlay').addEventListener('click', function(e
   </div><!-- ap-body -->
  </div><!-- ap-panel -->
 </div><!-- ap-overlay -->
-<!-- ── ADMIN CONFIRM MODAL ──────────────────────────── -->
+
+<!-- ══════════════════════════════════════════════
+     CART DRAWER
+══════════════════════════════════════════════ -->
+<div id="cartBackdrop" onclick="closeCart()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:8000;backdrop-filter:blur(2px);"></div>
+
+<div id="cartDrawer" style="position:fixed;top:0;right:-420px;width:100%;max-width:420px;height:100vh;background:#fff;z-index:8001;display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,0.15);transition:right 0.32s cubic-bezier(0.4,0,0.2,1);">
+
+  <!-- Cart Header -->
+  <div style="padding:20px 20px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
+    <svg width="20" height="20" fill="none" stroke="#111" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;margin:0;flex:1;">Your Cart</h2>
+    <span id="cartItemCount" style="background:#1a56db;color:#fff;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:800;padding:2px 9px;border-radius:20px;">0</span>
+    <button onclick="closeCart()" style="background:none;border:none;cursor:pointer;padding:4px;color:#64748b;font-size:1.2rem;">✕</button>
+  </div>
+
+  <!-- Cart Items -->
+  <div id="cartItemsList" style="flex:1;overflow-y:auto;padding:12px 16px;"></div>
+
+  <!-- Cart Footer -->
+  <div id="cartFooter" style="display:none;border-top:1px solid #f1f5f9;padding:16px 20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#64748b;">Subtotal</span>
+      <span id="cartSubtotal" style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#111;">GH₵0</span>
+    </div>
+    <p style="font-size:0.75rem;color:#94a3b8;margin:0 0 14px;">Delivery fee calculated at checkout</p>
+    <button onclick="openCheckout()" style="width:100%;padding:14px;background:#1a56db;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;transition:background 0.18s;letter-spacing:0.02em;">Proceed to Checkout →</button>
+    <button onclick="clearCart()" style="width:100%;padding:10px;background:none;border:none;color:#94a3b8;font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer;margin-top:6px;">Clear cart</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHECKOUT MODAL
+══════════════════════════════════════════════ -->
+<div id="checkoutOverlay" onclick="checkoutOverlayClick(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:18px;width:100%;max-width:520px;margin:auto;box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;animation:slideUp 0.25s ease;">
+
+    <!-- Checkout Header -->
+    <div style="background:#0f172a;padding:18px 22px;display:flex;align-items:center;gap:10px;">
+      <svg width="20" height="20" fill="none" stroke="#60a5fa" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <div style="flex:1;">
+        <p style="margin:0;color:#94a3b8;font-size:0.72rem;font-family:'DM Sans',sans-serif;">Andani Electronics</p>
+        <h2 style="margin:0;color:#fff;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;">Checkout</h2>
+      </div>
+      <button onclick="closeCheckout()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;">✕</button>
+    </div>
+
+    <!-- Step indicators -->
+    <div style="display:flex;background:#f8fafc;border-bottom:1px solid #e2e8f0;" id="checkoutSteps">
+      <div class="co-step active" data-step="1" style="flex:1;padding:12px;text-align:center;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#1a56db;border-bottom:2px solid #1a56db;">① Details</div>
+      <div class="co-step" data-step="2" style="flex:1;padding:12px;text-align:center;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#94a3b8;border-bottom:2px solid transparent;">② Payment</div>
+      <div class="co-step" data-step="3" style="flex:1;padding:12px;text-align:center;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#94a3b8;border-bottom:2px solid transparent;">③ Confirm</div>
+    </div>
+
+    <div style="padding:22px;">
+
+      <!-- STEP 1: Customer Details -->
+      <div id="coStep1">
+        <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 16px;">Your Details</p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:4px;">Full Name *</label>
+            <input id="coName" placeholder="e.g. Amina Issahaku" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:4px;">Phone Number *</label>
+            <input id="coPhone" placeholder="e.g. 0546 459 999" type="tel" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:4px;">Delivery Location *</label>
+            <input id="coLocation" placeholder="e.g. Tamale, Bolgatanga, Wa…" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:4px;">Notes (optional)</label>
+            <textarea id="coNotes" placeholder="Any special instructions…" rows="2" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;resize:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+          </div>
+        </div>
+        <button onclick="coGoStep2()" style="width:100%;padding:13px;background:#1a56db;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;margin-top:18px;">Continue to Payment →</button>
+      </div>
+
+      <!-- STEP 2: Payment Method -->
+      <div id="coStep2" style="display:none;">
+        <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 16px;">Choose Payment Method</p>
+        <div style="display:flex;flex-direction:column;gap:10px;" id="paymentMethods">
+
+          <label id="pmMomo" class="payment-option" onclick="selectPayment('momo')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
+            <div style="width:40px;height:40px;background:#fff3cd;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📱</div>
+            <div style="flex:1;">
+              <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">Mobile Money</p>
+              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">MTN MoMo · Telecel · AirtelTigo</p>
+            </div>
+            <div id="pmMomoCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;"></div>
+          </label>
+
+          <label id="pmCash" class="payment-option" onclick="selectPayment('cash')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
+            <div style="width:40px;height:40px;background:#ecfdf5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">💵</div>
+            <div style="flex:1;">
+              <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">Cash on Delivery</p>
+              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">Pay when your order arrives</p>
+            </div>
+            <div id="pmCashCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;"></div>
+          </label>
+
+          <label id="pmWhatsapp" class="payment-option" onclick="selectPayment('whatsapp')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
+            <div style="width:40px;height:40px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">💬</div>
+            <div style="flex:1;">
+              <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">WhatsApp Order</p>
+              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">Send order via WhatsApp, pay on pickup</p>
+            </div>
+            <div id="pmWhatsappCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;"></div>
+          </label>
+
+        </div>
+
+        <!-- MoMo details -->
+        <div id="momoDetails" style="display:none;margin-top:14px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px;">
+          <p style="margin:0 0 10px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;">Send payment to:</p>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="font-size:1.1rem;">📱</span>
+            <div>
+              <p style="margin:0;font-weight:700;font-family:'Syne',sans-serif;">0546 459 999</p>
+              <p style="margin:0;font-size:0.75rem;color:#92400e;">MTN MoMo — Andani Electronics</p>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.1rem;">📱</span>
+            <div>
+              <p style="margin:0;font-weight:700;font-family:'Syne',sans-serif;">0545 258 232</p>
+              <p style="margin:0;font-size:0.75rem;color:#92400e;">Telecel — Andani Electronics</p>
+            </div>
+          </div>
+          <p style="margin:10px 0 0;font-size:0.75rem;color:#92400e;">Send exact amount and screenshot to our WhatsApp after placing order.</p>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <button onclick="coGoStep1()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">← Back</button>
+          <button onclick="coGoStep3()" style="flex:2;padding:12px;background:#1a56db;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;">Review Order →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Confirm -->
+      <div id="coStep3" style="display:none;">
+        <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 14px;">Order Summary</p>
+
+        <div id="coSummaryItems" style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:12px;max-height:180px;overflow-y:auto;"></div>
+
+        <div id="coSummaryDetails" style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.82rem;font-family:'DM Sans',sans-serif;"></div>
+
+        <div style="display:flex;justify-content:space-between;padding:12px 0;border-top:2px solid #e2e8f0;">
+          <span style="font-family:'Syne',sans-serif;font-weight:800;">Total</span>
+          <span id="coFinalTotal" style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#1a56db;"></span>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button onclick="coGoStep2()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">← Back</button>
+          <button onclick="placeOrder()" id="placeOrderBtn" style="flex:2;padding:12px;background:#059669;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;">✓ Place Order</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 <div id="apConfirmOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:20000;align-items:center;justify-content:center;backdrop-filter:blur(3px);">
   <div style="background:#fff;border-radius:14px;padding:28px 28px 22px;max-width:380px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.2s ease;">
     <div style="width:48px;height:48px;background:#fef2f2;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
