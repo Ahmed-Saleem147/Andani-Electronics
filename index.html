@@ -1564,6 +1564,7 @@
   }
 
 </style>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body>
 
@@ -2632,25 +2633,50 @@ function coGoStep3() {
   setCoStep(3);
 }
 
+// ── PAYSTACK PUBLIC KEY ───────────────────────────────────
+// 🔑 Replace with your real Paystack public key from dashboard.paystack.com
+const PAYSTACK_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
 function selectPayment(method) {
   selectedPayment = method;
-  ['momo','cash','whatsapp'].forEach(m => {
-    const el = document.getElementById('pm'+m.charAt(0).toUpperCase()+m.slice(1));
-    const check = document.getElementById('pm'+m.charAt(0).toUpperCase()+m.slice(1)+'Check');
-    if (el) el.style.borderColor = m===method ? '#1a56db' : '#e2e8f0';
+
+  // Update visual selection
+  ['paystack','cash'].forEach(m => {
+    const cap = m.charAt(0).toUpperCase() + m.slice(1);
+    const el    = document.getElementById('pm' + cap);
+    const check = document.getElementById('pm' + cap + 'Check');
+    if (el)    el.style.borderColor  = m===method ? '#1a56db' : '#e2e8f0';
     if (check) {
-      check.style.background    = m===method ? '#1a56db' : '';
-      check.style.borderColor   = m===method ? '#1a56db' : '#cbd5e1';
+      check.style.background  = m===method ? '#1a56db' : '';
+      check.style.borderColor = m===method ? '#1a56db' : '#cbd5e1';
     }
   });
-  document.getElementById('momoDetails').style.display = method==='momo' ? 'block' : 'none';
+
+  // Show relevant info panel
+  document.getElementById('paystackInfo').style.display = method==='paystack' ? 'block' : 'none';
+  document.getElementById('cashInfo').style.display     = method==='cash'     ? 'block' : 'none';
+
+  // Show customer phone in cash info
+  if (method==='cash') {
+    const el = document.getElementById('cashPhoneShow');
+    if (el) el.textContent = document.getElementById('coPhone').value || 'your number';
+  }
+
+  // Update step 3 button label
+  const btn = document.getElementById('placeOrderBtn');
+  if (btn) {
+    if (method === 'paystack') {
+      btn.textContent = '🔒 Pay Now with Paystack';
+      btn.style.background = '#0ba4db';
+    } else {
+      btn.textContent = '✓ Place Order (Cash on Delivery)';
+      btn.style.background = '#059669';
+    }
+  }
 }
 
 async function placeOrder() {
-  const btn = document.getElementById('placeOrderBtn');
-  btn.textContent = 'Placing order…';
-  btn.disabled = true;
-
+  const btn  = document.getElementById('placeOrderBtn');
   const name     = document.getElementById('coName').value.trim();
   const phone    = document.getElementById('coPhone').value.trim();
   const location = document.getElementById('coLocation').value.trim();
@@ -2658,31 +2684,82 @@ async function placeOrder() {
   const total    = cartTotal();
   const items    = cartItems.map(i => ({id:i.id, name:i.name, price:i.price, qty:i.qty}));
 
-  // Save to Supabase
-  try {
-    await sbPost('orders', {
-      customer_name: name, customer_phone: phone,
-      customer_location: location,
-      items, total, status:'pending',
-      notes: `Payment: ${selectedPayment}${notes ? ' | '+notes : ''}`
+  if (selectedPayment === 'paystack') {
+    // ── PAYSTACK PAYMENT ─────────────────────────────────
+    // Derive email: use phone as email fallback if no email field
+    const email = `${phone.replace(/\s/g,'')}@andanielectronics.com`;
+
+    const handler = PaystackPop.setup({
+      key: PAYSTACK_KEY,
+      email: email,
+      amount: total * 100,           // Paystack uses pesewas (kobo)
+      currency: 'GHS',
+      ref: 'AE-' + Date.now(),
+      metadata: {
+        custom_fields: [
+          { display_name:'Customer Name',     variable_name:'customer_name',     value: name     },
+          { display_name:'Phone',             variable_name:'phone',             value: phone    },
+          { display_name:'Delivery Location', variable_name:'location',          value: location },
+          { display_name:'Order Items',       variable_name:'items',             value: items.map(i=>`${i.name} x${i.qty}`).join(', ') }
+        ]
+      },
+      onClose: function() {
+        apToast('Payment cancelled. Your cart is still saved.', 'error');
+      },
+      callback: async function(response) {
+        // Payment successful — reference is response.reference
+        btn.textContent = 'Saving order…';
+        btn.disabled = true;
+
+        // Save to Supabase with payment ref
+        try {
+          await sbPost('orders', {
+            customer_name: name, customer_phone: phone,
+            customer_location: location, items, total, status: 'confirmed',
+            notes: `Paystack ref: ${response.reference}${notes ? ' | '+notes : ''}`
+          });
+        } catch(e) { console.warn('Order save failed:', e); }
+
+        // Notify store via WhatsApp (no manual payment needed — just order notification)
+        const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
+        const msg = `✅ *PAID ORDER — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Paystack ✅ (Ref: ${response.reference})\n\n_Payment confirmed automatically._`;
+        window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+
+        finishOrder(btn);
+      }
     });
-  } catch(e) { console.warn('Order save failed (offline?):', e); }
+    handler.openIframe();
 
-  // Send WhatsApp message to store
-  const itemLines = items.map(i => `• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
-  const payLabels = { momo:'Mobile Money', cash:'Cash on Delivery', whatsapp:'WhatsApp Order' };
-  const msg = `🛒 *New Order — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* ${payLabels[selectedPayment]||selectedPayment}${notes?'\n*Notes:* '+notes:''}\n\n_Sent from andanielectronics.com_`;
-  window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+  } else {
+    // ── CASH ON DELIVERY ─────────────────────────────────
+    btn.textContent = 'Placing order…';
+    btn.disabled = true;
 
-  // Reset
+    try {
+      await sbPost('orders', {
+        customer_name: name, customer_phone: phone,
+        customer_location: location, items, total, status: 'pending',
+        notes: `Cash on Delivery${notes ? ' | '+notes : ''}`
+      });
+    } catch(e) { console.warn('Order save failed:', e); }
+
+    const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
+    const msg = `🛒 *New COD Order — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Cash on Delivery\n\n_Please confirm with customer._`;
+    window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+
+    finishOrder(btn);
+  }
+}
+
+function finishOrder(btn) {
   clearCart();
   closeCheckout();
   selectedPayment = '';
-  ['coName','coPhone','coLocation','coNotes'].forEach(id => document.getElementById(id).value='');
-  btn.textContent = '✓ Place Order';
-  btn.disabled = false;
-  apToast('🎉 Order placed! Check WhatsApp for confirmation.');
+  ['coName','coPhone','coLocation','coNotes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  if (btn) { btn.textContent = '✓ Place Order'; btn.disabled = false; btn.style.background='#059669'; }
+  apToast('🎉 Order placed successfully! Check WhatsApp for updates.');
 }
+
 
 // ══════════════════════════════════════════════════════
 //  DYNAMIC SIDEBAR BUILDER
@@ -3587,56 +3664,47 @@ document.getElementById('apConfirmOverlay').addEventListener('click', function(e
 
       <!-- STEP 2: Payment Method -->
       <div id="coStep2" style="display:none;">
-        <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 16px;">Choose Payment Method</p>
-        <div style="display:flex;flex-direction:column;gap:10px;" id="paymentMethods">
+        <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 6px;">Choose Payment Method</p>
+        <p style="font-size:0.78rem;color:#64748b;margin:0 0 16px;">All payments are secured by <strong>Paystack</strong> 🔒</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
 
-          <label id="pmMomo" class="payment-option" onclick="selectPayment('momo')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
-            <div style="width:40px;height:40px;background:#fff3cd;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📱</div>
-            <div style="flex:1;">
-              <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">Mobile Money</p>
-              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">MTN MoMo · Telecel · AirtelTigo</p>
+          <!-- Paystack (Card / MoMo / Bank) -->
+          <label id="pmPaystack" onclick="selectPayment('paystack')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
+            <div style="width:40px;height:40px;background:#eef2ff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="8" fill="#0ba4db"/><rect x="6" y="11" width="28" height="6" rx="2" fill="white" opacity="0.9"/><rect x="6" y="21" width="10" height="4" rx="1" fill="white" opacity="0.7"/><rect x="18" y="21" width="6" height="4" rx="1" fill="white" opacity="0.5"/></svg>
             </div>
-            <div id="pmMomoCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;"></div>
+            <div style="flex:1;">
+              <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">Card / Mobile Money / Bank</p>
+              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">Visa · Mastercard · MTN MoMo · Telecel · AirtelTigo</p>
+            </div>
+            <div id="pmPaystackCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;flex-shrink:0;"></div>
           </label>
 
-          <label id="pmCash" class="payment-option" onclick="selectPayment('cash')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
+          <!-- Cash on Delivery -->
+          <label id="pmCash" onclick="selectPayment('cash')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
             <div style="width:40px;height:40px;background:#ecfdf5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">💵</div>
             <div style="flex:1;">
               <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">Cash on Delivery</p>
-              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">Pay when your order arrives</p>
+              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">Pay in cash when your order arrives</p>
             </div>
-            <div id="pmCashCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;"></div>
-          </label>
-
-          <label id="pmWhatsapp" class="payment-option" onclick="selectPayment('whatsapp')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.18s;">
-            <div style="width:40px;height:40px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">💬</div>
-            <div style="flex:1;">
-              <p style="margin:0;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;">WhatsApp Order</p>
-              <p style="margin:2px 0 0;font-size:0.75rem;color:#64748b;">Send order via WhatsApp, pay on pickup</p>
-            </div>
-            <div id="pmWhatsappCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;"></div>
+            <div id="pmCashCheck" style="width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;flex-shrink:0;"></div>
           </label>
 
         </div>
 
-        <!-- MoMo details -->
-        <div id="momoDetails" style="display:none;margin-top:14px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px;">
-          <p style="margin:0 0 10px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;">Send payment to:</p>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-            <span style="font-size:1.1rem;">📱</span>
-            <div>
-              <p style="margin:0;font-weight:700;font-family:'Syne',sans-serif;">0546 459 999</p>
-              <p style="margin:0;font-size:0.75rem;color:#92400e;">MTN MoMo — Andani Electronics</p>
-            </div>
+        <!-- Paystack trust badges -->
+        <div id="paystackInfo" style="display:none;margin-top:12px;background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <svg width="14" height="14" fill="none" stroke="#0284c7" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:#0369a1;">256-bit SSL Encrypted · Powered by Paystack</span>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:1.1rem;">📱</span>
-            <div>
-              <p style="margin:0;font-weight:700;font-family:'Syne',sans-serif;">0545 258 232</p>
-              <p style="margin:0;font-size:0.75rem;color:#92400e;">Telecel — Andani Electronics</p>
-            </div>
-          </div>
-          <p style="margin:10px 0 0;font-size:0.75rem;color:#92400e;">Send exact amount and screenshot to our WhatsApp after placing order.</p>
+          <p style="margin:0;font-size:0.74rem;color:#0369a1;">You'll be redirected to Paystack's secure payment page. Your card/MoMo details are never stored on our site.</p>
+        </div>
+
+        <div id="cashInfo" style="display:none;margin-top:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 14px;">
+          <p style="margin:0;font-size:0.78rem;color:#166534;font-family:'DM Sans',sans-serif;">
+            📦 Your order will be prepared and delivered. Our team will contact you on <strong id="cashPhoneShow"></strong> to confirm delivery details. Payment is collected on arrival.
+          </p>
         </div>
 
         <div style="display:flex;gap:10px;margin-top:18px;">
@@ -3658,9 +3726,10 @@ document.getElementById('apConfirmOverlay').addEventListener('click', function(e
           <span id="coFinalTotal" style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#1a56db;"></span>
         </div>
 
+        <!-- Dynamic place order button (changes based on payment method) -->
         <div style="display:flex;gap:10px;margin-top:10px;">
           <button onclick="coGoStep2()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">← Back</button>
-          <button onclick="placeOrder()" id="placeOrderBtn" style="flex:2;padding:12px;background:#059669;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;">✓ Place Order</button>
+          <button onclick="placeOrder()" id="placeOrderBtn" style="flex:2;padding:13px;background:#059669;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;">✓ Place Order</button>
         </div>
       </div>
 
