@@ -2288,6 +2288,14 @@ async function loadProducts() {
   buildSidebar();
 }
 
+function renderFeatured() {
+  // Render featured products if a featured section exists
+  const featuredGrid = document.getElementById('featuredGrid');
+  if (!featuredGrid || !allProducts.length) return;
+  const featured = allProducts.filter(p => p.featured).slice(0, 4);
+  featuredGrid.innerHTML = featured.map(p => makeCard(p)).join('');
+}
+
 function showLocalBanner() {
   const banner = document.createElement('div');
   banner.id = 'localBanner';
@@ -2698,8 +2706,17 @@ function selectPayment(method) {
 
 let paystackOpen = false;
 
+function loadPaystackScript(callback) {
+  if (typeof PaystackPop !== 'undefined') { callback(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://js.paystack.co/v1/inline.js';
+  s.onload = callback;
+  s.onerror = () => apToast('Could not load payment system. Check your internet.', 'error');
+  document.head.appendChild(s);
+}
+
 async function placeOrder() {
-  const btn  = document.getElementById('placeOrderBtn');
+  const btn      = document.getElementById('placeOrderBtn');
   const name     = document.getElementById('coName').value.trim();
   const phone    = document.getElementById('coPhone').value.trim();
   const location = document.getElementById('coLocation').value.trim();
@@ -2708,29 +2725,29 @@ async function placeOrder() {
   const items    = cartItems.map(i => ({id:i.id, name:i.name, price:i.price, qty:i.qty}));
 
   if (selectedPayment === 'paystack') {
-    // ── PAYSTACK PAYMENT ─────────────────────────────────
-    // Check if Paystack loaded
-    if (typeof PaystackPop === 'undefined') {
-      apToast('⚠️ Payment system not loaded. Please check your internet connection and try again.', 'error');
-      btn.textContent = '🔒 Pay Now with Paystack';
-      btn.disabled = false;
-      return;
-    }
+    btn.textContent = 'Loading…';
+    btn.disabled = true;
 
     const emailInput = document.getElementById('coEmail').value.trim();
     const email = (receiptPref === 'email' && emailInput) ? emailInput : `${phone.replace(/\s/g,'')}@andanielectronics.com`;
+    const ref = 'AE-' + Date.now();
 
-    try {
+    loadPaystackScript(function() {
+      btn.textContent = '🔒 Pay Now with Paystack';
+      btn.disabled = false;
+
+      if (typeof PaystackPop === 'undefined') {
+        apToast('Payment system unavailable. Please try again.', 'error');
+        return;
+      }
+
       const handler = PaystackPop.setup({
         key: PAYSTACK_KEY,
         email: email,
         amount: total * 100,
         currency: 'GHS',
-        ref: 'AE-' + Date.now(),
+        ref: ref,
         label: name,
-        phone: phone.replace(/\s/g,''),
-        firstname: name.split(' ')[0],
-        lastname: name.split(' ').slice(1).join(' ') || name,
         metadata: {
           custom_fields: [
             { display_name:'Customer Name',     variable_name:'customer_name', value: name     },
@@ -2745,34 +2762,26 @@ async function placeOrder() {
           btn.textContent = '🔒 Pay Now with Paystack';
           btn.disabled = false;
         },
-        callback: async function(response) {
+        callback: function(response) {
           paystackOpen = false;
           btn.textContent = 'Saving order…';
-          btn.disabled = true;
 
-          try {
-            await sbPost('orders', {
-              customer_name: name, customer_phone: phone,
-              customer_location: location, items, total, status: 'confirmed',
-              notes: `Paystack ref: ${response.reference}${notes ? ' | '+notes : ''}`
-            });
-          } catch(e) { console.warn('Order save failed:', e); }
+          // Save order and notify async but don't make callback async
+          sbPost('orders', {
+            customer_name: name, customer_phone: phone,
+            customer_location: location, items, total, status: 'confirmed',
+            notes: `Paystack ref: ${response.reference}${notes ? ' | '+notes : ''}`
+          }).catch(e => console.warn('Order save failed:', e));
 
           const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
           const msg = `✅ *PAID ORDER — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Paystack ✅ (Ref: ${response.reference})\n\n_Payment confirmed automatically._`;
           window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
-
           finishOrder(btn);
         }
       });
       paystackOpen = true;
       handler.openIframe();
-    } catch(err) {
-      console.error('Paystack error:', err);
-      apToast('Payment failed to open. Please try again.', 'error');
-      btn.textContent = '🔒 Pay Now with Paystack';
-      btn.disabled = false;
-    }
+    });
 
   } else {
     // ── CASH ON DELIVERY ─────────────────────────────────
