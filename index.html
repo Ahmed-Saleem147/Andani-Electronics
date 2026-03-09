@@ -2367,7 +2367,7 @@ async function loadProducts() {
   }
 
   try {
-    const rows = await sbFetch('products', 'select=*&order=id.asc&in_stock=eq.true');
+    const rows = await sbFetch('products', 'select=*&order=id.asc');
     if (!rows || !rows.length) throw new Error('Empty response');
     allProducts = rows.map(p => ({
       id:       p.id,
