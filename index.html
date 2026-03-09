@@ -2774,8 +2774,14 @@ async function placeOrder() {
           }).catch(e => console.warn('Order save failed:', e));
 
           const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
-          const msg = `✅ *PAID ORDER — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Paystack ✅ (Ref: ${response.reference})\n\n_Payment confirmed automatically._`;
-          window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+          const msg = `🎉 *NEW PAID ORDER — Andani Electronics*\n\n✅ *Payment Confirmed via Paystack*\n📌 Ref: ${response.reference}\n\n👤 *Customer Details*\nName: ${name}\nPhone: ${phone}\nLocation: ${location}\n\n🛒 *Items Ordered*\n${itemLines}\n\n💰 *Total Paid: GH₵${total.toLocaleString()}*\n\n📅 Money will be in your account by next business day.\n\n_Please prepare order for delivery._`;
+          const waUrl = `https://wa.me/233546459999?text=${encodeURIComponent(msg)}`;
+          // Try window.open first, fallback to link click
+          const waWindow = window.open(waUrl, '_blank');
+          if (!waWindow || waWindow.closed) {
+            const a = document.createElement('a');
+            a.href = waUrl; a.target = '_blank'; a.click();
+          }
           finishOrder(btn);
         }
       });
@@ -2797,8 +2803,13 @@ async function placeOrder() {
     } catch(e) { console.warn('Order save failed:', e); }
 
     const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
-    const msg = `🛒 *New COD Order — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Cash on Delivery\n\n_Please confirm with customer._`;
-    window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+    const msg = `🛒 *NEW ORDER — Andani Electronics*\n\n💵 *Payment: Cash on Delivery*\n\n👤 *Customer Details*\nName: ${name}\nPhone: ${phone}\nLocation: ${location}\n\n🛒 *Items Ordered*\n${itemLines}\n\n💰 *Total: GH₵${total.toLocaleString()}*\n\n⚠️ _Payment to be collected on delivery. Please confirm with customer before dispatching._`;
+    const waUrl = `https://wa.me/233546459999?text=${encodeURIComponent(msg)}`;
+    const waWindow = window.open(waUrl, '_blank');
+    if (!waWindow || waWindow.closed) {
+      const a = document.createElement('a');
+      a.href = waUrl; a.target = '_blank'; a.click();
+    }
 
     finishOrder(btn);
   }
