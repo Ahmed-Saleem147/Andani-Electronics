@@ -3550,8 +3550,9 @@ function apShowConfirm(title, msg, btnLabel, onConfirm) {
   const overlay = document.getElementById('apConfirmOverlay');
   overlay.style.display = 'flex';
   document.getElementById('apConfirmOkBtn').onclick = async () => {
+    const cb = apConfirmCallback;
     apCloseConfirm();
-    if (apConfirmCallback) await apConfirmCallback();
+    if (cb) await cb();
   };
 }
 
