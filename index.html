@@ -2607,7 +2607,7 @@ function closeCheckout() {
 }
 
 function checkoutOverlayClick(e) {
-  if (e.target === document.getElementById('checkoutOverlay')) closeCheckout();
+  if (e.target === document.getElementById('checkoutOverlay') && !paystackOpen) closeCheckout();
 }
 
 function setCoStep(n) {
@@ -2696,6 +2696,8 @@ function selectPayment(method) {
   }
 }
 
+let paystackOpen = false;
+
 async function placeOrder() {
   const btn  = document.getElementById('placeOrderBtn');
   const name     = document.getElementById('coName').value.trim();
@@ -2738,11 +2740,13 @@ async function placeOrder() {
           ]
         },
         onClose: function() {
+          paystackOpen = false;
           apToast('Payment cancelled. Your cart is still saved.', 'error');
           btn.textContent = '🔒 Pay Now with Paystack';
           btn.disabled = false;
         },
         callback: async function(response) {
+          paystackOpen = false;
           btn.textContent = 'Saving order…';
           btn.disabled = true;
 
@@ -2761,6 +2765,7 @@ async function placeOrder() {
           finishOrder(btn);
         }
       });
+      paystackOpen = true;
       handler.openIframe();
     } catch(err) {
       console.error('Paystack error:', err);
@@ -3788,7 +3793,7 @@ document.getElementById('apConfirmOverlay').addEventListener('click', function(e
         <!-- Dynamic place order button (changes based on payment method) -->
         <div style="display:flex;gap:10px;margin-top:10px;">
           <button onclick="coGoStep2()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">← Back</button>
-          <button onclick="placeOrder()" id="placeOrderBtn" style="flex:2;padding:13px;background:#059669;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;">✓ Place Order</button>
+          <button onclick="event.stopPropagation();placeOrder();" id="placeOrderBtn" style="flex:2;padding:13px;background:#0ba4db;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;">🔒 Pay Now with Paystack</button>
         </div>
       </div>
 
