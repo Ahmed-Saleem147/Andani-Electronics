@@ -2571,6 +2571,27 @@ function closeCart() {
 //  CHECKOUT FLOW
 // ══════════════════════════════════════════════════════
 let selectedPayment = '';
+let receiptPref = 'email';
+
+function toggleReceiptPref(pref) {
+  receiptPref = pref;
+  const isEmail = pref === 'email';
+
+  document.getElementById('prefEmailBtn').style.borderColor = isEmail ? '#1a56db' : '#e2e8f0';
+  document.getElementById('prefEmailBtn').style.background  = isEmail ? '#eff6ff' : '';
+  document.getElementById('prefEmailDot').style.background  = isEmail ? '#1a56db' : '';
+  document.getElementById('prefEmailDot').style.border      = isEmail ? 'none' : '2px solid #cbd5e1';
+  document.querySelector('#prefEmailBtn span').style.color  = isEmail ? '#1a56db' : '#64748b';
+
+  document.getElementById('prefSmsBtn').style.borderColor   = !isEmail ? '#1a56db' : '#e2e8f0';
+  document.getElementById('prefSmsBtn').style.background    = !isEmail ? '#eff6ff' : '';
+  document.getElementById('prefSmsDot').style.background    = !isEmail ? '#1a56db' : '';
+  document.getElementById('prefSmsDot').style.border        = !isEmail ? 'none' : '2px solid #cbd5e1';
+  document.querySelector('#prefSmsBtn span').style.color    = !isEmail ? '#1a56db' : '#64748b';
+
+  document.getElementById('emailInputWrap').style.display   = isEmail ? 'block' : 'none';
+  document.getElementById('smsInputWrap').style.display     = !isEmail ? 'block' : 'none';
+}
 
 function openCheckout() {
   if (!cartItems.length) { apToast('Your cart is empty!','error'); return; }
@@ -2621,7 +2642,7 @@ function coGoStep3() {
       <span>${i.name.substring(0,36)}${i.name.length>36?'…':''} ×${i.qty}</span>
       <span style="font-weight:700;white-space:nowrap;margin-left:8px;">GH₵${(i.price*i.qty).toLocaleString()}</span>
     </div>`).join('');
-  const payLabels = { momo:'Mobile Money', cash:'Cash on Delivery', whatsapp:'WhatsApp Order' };
+  const payLabels = { paystack:'Card / Mobile Money / Bank', cash:'Cash on Delivery' };
   summaryDets.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Name:</span><strong>${document.getElementById('coName').value}</strong></div>
@@ -2629,7 +2650,7 @@ function coGoStep3() {
       <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Location:</span><strong>${document.getElementById('coLocation').value}</strong></div>
       <div style="display:flex;gap:8px;"><span style="color:#64748b;min-width:80px;">Payment:</span><strong>${payLabels[selectedPayment]||selectedPayment}</strong></div>
     </div>`;
-  finalTotal.textContent = 'GH₵' + cartTotal().toLocaleString();
+  finalTotal.innerHTML = '<span style="font-family:Arial,sans-serif;">GH₵</span>' + cartTotal().toLocaleString();
   setCoStep(3);
 }
 
@@ -2686,49 +2707,57 @@ async function placeOrder() {
 
   if (selectedPayment === 'paystack') {
     // ── PAYSTACK PAYMENT ─────────────────────────────────
-    // Derive email: use phone as email fallback if no email field
-    const email = `${phone.replace(/\s/g,'')}@andanielectronics.com`;
+    const emailInput = document.getElementById('coEmail').value.trim();
+    // If SMS preferred or no email entered, use phone-based email (Paystack still needs an email field)
+    const email = (receiptPref === 'email' && emailInput) ? emailInput : `${phone.replace(/\s/g,'')}@andanielectronics.com`;
+    // Tell Paystack to send SMS receipt if preferred
+    const channels = receiptPref === 'sms' ? ['mobile_money'] : undefined;
 
-    const handler = PaystackPop.setup({
-      key: PAYSTACK_KEY,
-      email: email,
-      amount: total * 100,           // Paystack uses pesewas (kobo)
-      currency: 'GHS',
-      ref: 'AE-' + Date.now(),
-      metadata: {
-        custom_fields: [
-          { display_name:'Customer Name',     variable_name:'customer_name',     value: name     },
-          { display_name:'Phone',             variable_name:'phone',             value: phone    },
-          { display_name:'Delivery Location', variable_name:'location',          value: location },
-          { display_name:'Order Items',       variable_name:'items',             value: items.map(i=>`${i.name} x${i.qty}`).join(', ') }
-        ]
-      },
-      onClose: function() {
-        apToast('Payment cancelled. Your cart is still saved.', 'error');
-      },
-      callback: async function(response) {
-        // Payment successful — reference is response.reference
-        btn.textContent = 'Saving order…';
-        btn.disabled = true;
+    try {
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_KEY,
+        email: email,
+        amount: total * 100,
+        currency: 'GHS',
+        ref: 'AE-' + Date.now(),
+        label: name,
+        metadata: {
+          custom_fields: [
+            { display_name:'Customer Name',     variable_name:'customer_name', value: name     },
+            { display_name:'Phone',             variable_name:'phone',         value: phone    },
+            { display_name:'Delivery Location', variable_name:'location',      value: location },
+            { display_name:'Order Items',       variable_name:'items',         value: items.map(i=>`${i.name} x${i.qty}`).join(', ') }
+          ]
+        },
+        onClose: function() {
+          apToast('Payment cancelled. Your cart is still saved.', 'error');
+        },
+        callback: async function(response) {
+          btn.textContent = 'Saving order…';
+          btn.disabled = true;
 
-        // Save to Supabase with payment ref
-        try {
-          await sbPost('orders', {
-            customer_name: name, customer_phone: phone,
-            customer_location: location, items, total, status: 'confirmed',
-            notes: `Paystack ref: ${response.reference}${notes ? ' | '+notes : ''}`
-          });
-        } catch(e) { console.warn('Order save failed:', e); }
+          try {
+            await sbPost('orders', {
+              customer_name: name, customer_phone: phone,
+              customer_location: location, items, total, status: 'confirmed',
+              notes: `Paystack ref: ${response.reference}${notes ? ' | '+notes : ''}`
+            });
+          } catch(e) { console.warn('Order save failed:', e); }
 
-        // Notify store via WhatsApp (no manual payment needed — just order notification)
-        const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
-        const msg = `✅ *PAID ORDER — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Paystack ✅ (Ref: ${response.reference})\n\n_Payment confirmed automatically._`;
-        window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
+          const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
+          const msg = `✅ *PAID ORDER — Andani Electronics*\n\n*Customer:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n\n*Items:*\n${itemLines}\n\n*Total: GH₵${total.toLocaleString()}*\n*Payment:* Paystack ✅ (Ref: ${response.reference})\n\n_Payment confirmed automatically._`;
+          window.open(`https://wa.me/233546459999?text=${encodeURIComponent(msg)}`, '_blank');
 
-        finishOrder(btn);
-      }
-    });
-    handler.openIframe();
+          finishOrder(btn);
+        }
+      });
+      handler.openIframe();
+    } catch(err) {
+      console.error('Paystack error:', err);
+      apToast('Payment failed to open. Please try again.', 'error');
+      btn.textContent = '🔒 Pay Now with Paystack';
+      btn.disabled = false;
+    }
 
   } else {
     // ── CASH ON DELIVERY ─────────────────────────────────
@@ -2755,7 +2784,8 @@ function finishOrder(btn) {
   clearCart();
   closeCheckout();
   selectedPayment = '';
-  ['coName','coPhone','coLocation','coNotes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  receiptPref = 'email';
+  ['coName','coPhone','coLocation','coNotes','coEmail'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   if (btn) { btn.textContent = '✓ Place Order'; btn.disabled = false; btn.style.background='#059669'; }
   apToast('🎉 Order placed successfully! Check WhatsApp for updates.');
 }
@@ -3642,6 +3672,25 @@ document.getElementById('apConfirmOverlay').addEventListener('click', function(e
       <div id="coStep1">
         <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 16px;">Your Details</p>
         <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:6px;">Receipt Preference</label>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <label onclick="toggleReceiptPref('email')" id="prefEmailBtn" style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:2px solid #1a56db;border-radius:8px;cursor:pointer;background:#eff6ff;">
+                <div id="prefEmailDot" style="width:14px;height:14px;border-radius:50%;background:#1a56db;flex-shrink:0;"></div>
+                <span style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:#1a56db;">📧 Email</span>
+              </label>
+              <label onclick="toggleReceiptPref('sms')" id="prefSmsBtn" style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;">
+                <div id="prefSmsDot" style="width:14px;height:14px;border-radius:50%;border:2px solid #cbd5e1;flex-shrink:0;"></div>
+                <span style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:#64748b;">📱 SMS</span>
+              </label>
+            </div>
+            <div id="emailInputWrap">
+              <input id="coEmail" placeholder="e.g. amina@gmail.com" type="email" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+            <div id="smsInputWrap" style="display:none;">
+              <p style="margin:0;font-size:0.75rem;color:#64748b;font-family:'DM Sans',sans-serif;">Receipt will be sent as SMS to your phone number above.</p>
+            </div>
+          </div>
           <div>
             <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:4px;">Full Name *</label>
             <input id="coName" placeholder="e.g. Amina Issahaku" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
