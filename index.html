@@ -3561,8 +3561,11 @@ function apCloseConfirm() {
 }
 
 // Close confirm on overlay click
-document.getElementById('apConfirmOverlay').addEventListener('click', function(e) {
-  if (e.target === this) apCloseConfirm();
+document.addEventListener('DOMContentLoaded', function() {
+  const confirmOverlay = document.getElementById('apConfirmOverlay');
+  if (confirmOverlay) confirmOverlay.addEventListener('click', function(e) {
+    if (e.target === this) apCloseConfirm();
+  });
 });
 </script>
 
