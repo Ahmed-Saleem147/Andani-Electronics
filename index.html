@@ -2136,6 +2136,7 @@ function makeCard(p) {
 // ── SUPABASE CONFIG ─────────────────────────────────────────
 const SUPABASE_URL  = 'https://oscubssythksaaqqwezu.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3Vic3N5dGhrc2FhcXF3ZXp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDA2NTYsImV4cCI6MjA4ODM3NjY1Nn0.itbbmkKCfSzy4ZGqyHFWw_TgxxN9lqV-_5HghUC-8Mo';
+const SB_SERVICE    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3Vic3N5dGhrc2FhcXF3ZXp1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjgwMDY1NiwiZXhwIjoyMDg4Mzc2NjU2fQ.PDZ00UQWdsGlzEx9sKvo1typQzMOk7bj_LwG87_moh0';
 
 async function sbFetch(table, params='') {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
@@ -2153,13 +2154,17 @@ async function sbPost(table, body) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
     method: 'POST',
     headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'apikey': SB_SERVICE,
+      'Authorization': 'Bearer ' + SB_SERVICE,
       'Content-Type': 'application/json',
       'Prefer': 'return=representation'
     },
     body: JSON.stringify(body)
   });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`sbPost failed: ${res.status} ${err}`);
+  }
   return res.json();
 }
 
@@ -3289,36 +3294,58 @@ function apRenderOrders(orders) {
       <p>No orders found.</p></div>`;
     return;
   }
+  const statusConfig = {
+    pending:   { bg:'#fffbeb', border:'#fcd34d', dot:'#f59e0b', label:'Pending',   icon:'⏳' },
+    confirmed: { bg:'#eff6ff', border:'#93c5fd', dot:'#3b82f6', label:'Confirmed', icon:'✅' },
+    delivered: { bg:'#f0fdf4', border:'#86efac', dot:'#22c55e', label:'Delivered', icon:'🎉' },
+  };
   cont.innerHTML = orders.map(o => {
+    const cfg = statusConfig[o.status] || statusConfig.pending;
     const itemList = Array.isArray(o.items) ? o.items.map(i => `${i.name} ×${i.qty||1}`).join(', ') : JSON.stringify(o.items);
+    const isDelivered = o.status === 'delivered';
+    const date = new Date(o.created_at).toLocaleDateString('en-GH',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     return `
-    <div class="ap-order-card">
-      <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <span class="ap-order-id">Order #${o.id}</span>
-          <span class="ap-status-badge ${o.status}">${o.status}</span>
-        </div>
-        <div class="ap-order-meta">${new Date(o.created_at).toLocaleDateString('en-GH',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
-        <div style="font-size:0.78rem;color:#475569;margin-top:4px;">${itemList}</div>
-        ${o.notes ? `<div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">Note: ${o.notes}</div>` : ''}
+    <div style="background:${cfg.bg};border:1.5px solid ${cfg.border};border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;transition:all 0.2s;${isDelivered?'opacity:0.75':''}">
+      <div onclick="apCycleStatus(${o.id},'${o.status}')" title="Click to update status"
+        style="width:28px;height:28px;border-radius:8px;border:2px solid ${cfg.dot};background:${isDelivered?cfg.dot:'#fff'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all 0.18s;">
+        ${isDelivered ? '<svg width=\"14\" height=\"14\" fill=\"none\" stroke=\"white\" stroke-width=\"3\" viewBox=\"0 0 24 24\"><polyline points=\"20 6 9 17 4 12\"/></svg>' : ''}
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-        <div class="ap-order-total">GH₵${Number(o.total).toLocaleString()}</div>
-        <select onchange="apUpdateOrderStatus(${o.id},this.value)" style="font-size:0.75rem;padding:4px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;">
-          <option ${o.status==='pending'?'selected':''} value="pending">Pending</option>
-          <option ${o.status==='confirmed'?'selected':''} value="confirmed">Confirmed</option>
-          <option ${o.status==='delivered'?'selected':''} value="delivered">Delivered</option>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.85rem;color:#0f172a;">Order #${o.id}</span>
+          <span style="background:${cfg.dot};color:#fff;font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:20px;">${cfg.icon} ${cfg.label}</span>
+        </div>
+        <div style="font-size:0.75rem;color:#64748b;margin-bottom:4px;">${date}</div>
+        <div style="font-size:0.78rem;color:#475569;margin-bottom:2px;${isDelivered?'text-decoration:line-through;color:#94a3b8':''}">${itemList}</div>
+        ${o.notes ? `<div style="font-size:0.72rem;color:#94a3b8;margin-top:2px;">📝 ${o.notes}</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;color:#0f172a;">GH₵${Number(o.total).toLocaleString()}</div>
+        <select onchange="apUpdateOrderStatus(${o.id},this.value)" style="font-size:0.72rem;padding:5px 8px;border:1.5px solid ${cfg.border};border-radius:8px;background:#fff;font-family:'Syne',sans-serif;font-weight:700;color:#475569;cursor:pointer;">
+          <option ${o.status==='pending'   ?'selected':''} value="pending">⏳ Pending</option>
+          <option ${o.status==='confirmed' ?'selected':''} value="confirmed">✅ Confirmed</option>
+          <option ${o.status==='delivered' ?'selected':''} value="delivered">🎉 Delivered</option>
         </select>
       </div>
     </div>`;
   }).join('');
 }
 
+async function apCycleStatus(id, current) {
+  const next = current === 'pending' ? 'confirmed' : current === 'confirmed' ? 'delivered' : 'pending';
+  await apUpdateOrderStatus(id, next);
+}
+
 async function apUpdateOrderStatus(id, status) {
   try {
     await sbAdmin('PATCH','orders',{status},`id=eq.${id}`);
-  } catch(e) { alert('Failed to update order status.'); }
+    apToast(`Order #${id} marked as ${status} ✓`);
+    apLoaded.orders = false;
+    const filter = document.getElementById('apOrderStatusFilter');
+    await apLoadOrders(filter ? filter.value : '');
+  } catch(e) { apToast('Failed to update order status.', 'error'); }
 }
+
 
 // ── PROMOTIONS ────────────────────────────────────────
 async function apLoadPromos() {
