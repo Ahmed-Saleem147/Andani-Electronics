@@ -3044,12 +3044,11 @@ document.querySelectorAll('.page-btn').forEach(btn => {
 
 // ── ADMIN AUTH ──────────────────────────────────────────────────────
 const ADMIN_CREDS = {
-  owner: { username: 'andani_owner', password: 'Andani@2025!' },
   admin: { username: 'andani_admin', password: 'Admin@Store1' }
 };
 
 let currentAdminRole = null;
-let selectedRole = 'owner';
+let selectedRole = 'admin';
 
 function openAdminModal() {
   document.getElementById('adminOverlay').classList.add('open');
@@ -3068,7 +3067,6 @@ function closeAdminModalDirect() {
 
 function selectRole(role) {
   selectedRole = role;
-  document.getElementById('tabOwner').classList.toggle('active', role === 'owner');
   document.getElementById('tabAdmin').classList.toggle('active', role === 'admin');
   document.getElementById('adminUser').value = '';
   document.getElementById('adminPass').value = '';
@@ -3098,8 +3096,8 @@ function showAdminBar() {
   const bar = document.getElementById('adminBar');
   const label = document.getElementById('adminBarLabel');
   const role = document.getElementById('adminBarRole');
-  label.textContent = currentAdminRole === 'owner' ? 'Welcome, Owner' : 'Welcome, Admin';
-  role.textContent = currentAdminRole.toUpperCase();
+  label.textContent = 'Welcome, Admin';
+  role.textContent = 'ADMIN';
   bar.classList.add('visible');
   // Push content up so bar doesn't overlap
   document.body.style.paddingBottom = '60px';
@@ -3269,7 +3267,7 @@ function apRenderProducts(prods) {
       <td>
         <div class="ap-row-actions">
           <button class="ap-icon-btn edit" title="Edit" onclick="apEditProduct(${p.id})">✏️</button>
-          <button class="ap-icon-btn del"  title="Delete" onclick="apDeleteProduct(${p.id},'${p.name.replace(/'/g,"\\'")}')">🗑️</button>
+          <button class="ap-icon-btn del"  title="Delete" onclick="apDeleteProduct(${p.id})" data-pid="${p.id}">🗑️</button>
         </div>
       </td>
     </tr>`).join('');
@@ -3355,7 +3353,9 @@ async function apSaveProduct() {
   } catch(e) { apToast('❌ Error saving product: ' + e.message, 'error'); }
 }
 
-async function apDeleteProduct(id, name) {
+async function apDeleteProduct(id) {
+  const p = apAllProducts.find(x => x.id === id);
+  const name = p ? p.name : 'this product';
   apShowConfirm(
     `Delete "${name}"?`,
     'This product will be permanently removed from your store and database. This cannot be undone.',
@@ -3583,8 +3583,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- Role selector -->
     <div class="admin-role-tabs">
-      <button class="admin-role-tab active" id="tabOwner" onclick="selectRole('owner')">👑 Owner</button>
-      <button class="admin-role-tab" id="tabAdmin" onclick="selectRole('admin')">🛠 Admin</button>
+      <button class="admin-role-tab active" id="tabAdmin" onclick="selectRole('admin')">🛠 Admin</button>
     </div>
 
     <div class="admin-field">
