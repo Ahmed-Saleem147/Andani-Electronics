@@ -3101,7 +3101,6 @@ function doAdminLogout() {
 // ══════════════════════════════════════════════════════
 //  ADMIN PANEL — Full Dashboard with Supabase
 // ══════════════════════════════════════════════════════
-const SB_SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3Vic3N5dGhrc2FhcXF3ZXp1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjgwMDY1NiwiZXhwIjoyMDg4Mzc2NjU2fQ.PDZ00UQWdsGlzEx9sKvo1typQzMOk7bj_LwG87_moh0';
 
 async function sbAdmin(method, table, body=null, params='') {
   const url = `${SUPABASE_URL}/rest/v1/${table}${params ? '?'+params : ''}`;
