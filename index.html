@@ -2656,7 +2656,7 @@ function coGoStep3() {
 
 // ── PAYSTACK PUBLIC KEY ───────────────────────────────────
 // 🔑 Replace with your real Paystack public key from dashboard.paystack.com
-const PAYSTACK_KEY = 'pk_test_b42afaa48c5daf06f63cd95d99274f0a96362196';
+const PAYSTACK_KEY = 'pk_live_56322497dd57490011c5c4c03e4f38d87da72f3c';
 
 function selectPayment(method) {
   selectedPayment = method;
@@ -2707,11 +2707,16 @@ async function placeOrder() {
 
   if (selectedPayment === 'paystack') {
     // ── PAYSTACK PAYMENT ─────────────────────────────────
+    // Check if Paystack loaded
+    if (typeof PaystackPop === 'undefined') {
+      apToast('⚠️ Payment system not loaded. Please check your internet connection and try again.', 'error');
+      btn.textContent = '🔒 Pay Now with Paystack';
+      btn.disabled = false;
+      return;
+    }
+
     const emailInput = document.getElementById('coEmail').value.trim();
-    // If SMS preferred or no email entered, use phone-based email (Paystack still needs an email field)
     const email = (receiptPref === 'email' && emailInput) ? emailInput : `${phone.replace(/\s/g,'')}@andanielectronics.com`;
-    // Tell Paystack to send SMS receipt if preferred
-    const channels = receiptPref === 'sms' ? ['mobile_money'] : undefined;
 
     try {
       const handler = PaystackPop.setup({
@@ -2721,6 +2726,9 @@ async function placeOrder() {
         currency: 'GHS',
         ref: 'AE-' + Date.now(),
         label: name,
+        phone: phone.replace(/\s/g,''),
+        firstname: name.split(' ')[0],
+        lastname: name.split(' ').slice(1).join(' ') || name,
         metadata: {
           custom_fields: [
             { display_name:'Customer Name',     variable_name:'customer_name', value: name     },
@@ -2731,6 +2739,8 @@ async function placeOrder() {
         },
         onClose: function() {
           apToast('Payment cancelled. Your cart is still saved.', 'error');
+          btn.textContent = '🔒 Pay Now with Paystack';
+          btn.disabled = false;
         },
         callback: async function(response) {
           btn.textContent = 'Saving order…';
