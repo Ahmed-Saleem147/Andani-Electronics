@@ -419,7 +419,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .product-image-wrap img {
@@ -434,7 +434,7 @@
 
   .badge {
     position: absolute;
-    top: 12px; left: 12px;
+    top: 10px; left: 10px;
     font-family: 'Syne', sans-serif;
     font-size: 0.68rem;
     font-weight: 700;
@@ -442,6 +442,8 @@
     letter-spacing: 0.06em;
     padding: 4px 10px;
     border-radius: 20px;
+    z-index: 10;
+    pointer-events: none;
   }
 
   .badge-sale { background: #ff3e6c; color: #fff; }
@@ -3126,12 +3128,13 @@ async function sbAdmin(method, table, body=null, params='') {
       'apikey': SB_SERVICE,
       'Authorization': 'Bearer ' + SB_SERVICE,
       'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : 'return=representation'
+      'Prefer': 'return=representation'
     }
   };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(url, opts);
   const text = await res.text();
+  if (!res.ok) throw new Error(`Supabase ${method} failed (${res.status}): ${text}`);
   return text ? JSON.parse(text) : [];
 }
 
