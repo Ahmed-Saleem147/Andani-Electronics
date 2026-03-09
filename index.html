@@ -1589,15 +1589,21 @@
     .products-area { padding: 0 !important; }
   }
 
-  /* Cart drawer */
+  /* Cart drawer — mobile bottom sheet */
   @media(max-width:480px) {
     #cartDrawer {
       width: 100% !important;
+      max-width: 100% !important;
       border-radius: 18px 18px 0 0 !important;
       top: auto !important;
       bottom: 0 !important;
       right: 0 !important;
-      max-height: 90vh !important;
+      max-height: 88vh !important;
+      transform: translateY(100%) !important;
+      transition: transform 0.32s cubic-bezier(0.4,0,0.2,1) !important;
+    }
+    #cartDrawer.open {
+      transform: translateY(0) !important;
     }
   }
 
@@ -2668,13 +2674,23 @@ function renderCartItems() {
 
 function openCart() {
   renderCartItems();
-  document.getElementById('cartDrawer').style.right = '0';
+  const drawer = document.getElementById('cartDrawer');
+  if (window.innerWidth <= 480) {
+    drawer.classList.add('open');
+  } else {
+    drawer.style.right = '0';
+  }
   document.getElementById('cartBackdrop').style.display = 'block';
   document.body.style.overflow = 'hidden';
 }
 
 function closeCart() {
-  document.getElementById('cartDrawer').style.right = '-420px';
+  const drawer = document.getElementById('cartDrawer');
+  if (window.innerWidth <= 480) {
+    drawer.classList.remove('open');
+  } else {
+    drawer.style.right = '-420px';
+  }
   document.getElementById('cartBackdrop').style.display = 'none';
   document.body.style.overflow = '';
 }
