@@ -6,6 +6,7 @@
 <title>Andani Electronics – TVs, Appliances & More</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
     --bg: #f5f6fa;
@@ -1417,61 +1418,120 @@
   }
   .ap-overlay.open { display: flex; }
 
+  /* ── ADMIN PANEL LAYOUT ── */
   .ap-panel {
     background: #fff; border-radius: 18px;
-    width: 100%; max-width: 900px;
+    width: 100%; max-width: 1120px;
     margin: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.22);
     overflow: hidden; animation: slideUp 0.25s ease;
-    min-height: 500px; display: flex; flex-direction: column;
+    height: 88vh; max-height: 820px; display: flex; flex-direction: row;
   }
 
-  .ap-header {
-    background: #0f172a; color: #fff;
-    padding: 18px 24px; display: flex;
-    align-items: center; gap: 12px;
+  /* Sidebar */
+  .ap-sidebar {
+    width: 210px; flex-shrink: 0; background: #0f172a;
+    display: flex; flex-direction: column; overflow: hidden;
   }
-  .ap-header h2 { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; margin:0; }
-  .ap-header-sub { color:#94a3b8; font-size:0.78rem; margin:0; }
-  .ap-close { margin-left:auto; background:rgba(255,255,255,0.1); border:none;
-    color:#fff; width:34px; height:34px; border-radius:8px; cursor:pointer;
-    font-size:1.1rem; display:flex; align-items:center; justify-content:center; }
-  .ap-close:hover { background:rgba(255,255,255,0.2); }
-
-  .ap-tabs {
-    display: flex; background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 0 16px; gap: 4px;
+  .ap-sidebar-header {
+    padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .ap-sidebar-logo {
+    font-family:'Syne',sans-serif; font-weight:800; font-size:0.92rem; color:#fff; margin:0;
+    display:flex; align-items:center; gap:8px;
+  }
+  .ap-sidebar-logo span { color:#60a5fa; }
+  .ap-sidebar-sub { font-size:0.7rem; color:#475569; margin:3px 0 0; }
+  .ap-sidebar-nav { flex:1; padding:10px 0; overflow-y:auto; }
+  .ap-sidebar-section {
+    font-family:'Syne',sans-serif; font-size:0.62rem; font-weight:700;
+    color:#334155; letter-spacing:0.08em; text-transform:uppercase;
+    padding:12px 18px 4px;
   }
   .ap-tab {
-    padding: 12px 18px; border: none; background: none;
-    font-family:'Syne',sans-serif; font-size:0.82rem; font-weight:700;
-    color: #64748b; cursor: pointer; border-bottom: 3px solid transparent;
-    transition: all 0.18s; white-space: nowrap;
+    display:flex; align-items:center; gap:10px; width:100%;
+    padding:9px 18px; border:none; background:none; cursor:pointer;
+    font-family:'Syne',sans-serif; font-size:0.79rem; font-weight:600;
+    color:#94a3b8; text-align:left; transition:all 0.16s;
+    border-left:3px solid transparent;
   }
-  .ap-tab.active { color: #1a56db; border-bottom-color: #1a56db; }
-  .ap-tab:hover { color: #1a56db; }
+  .ap-tab:hover { background:rgba(255,255,255,0.05); color:#e2e8f0; }
+  .ap-tab.active { background:rgba(26,86,219,0.18); color:#60a5fa; border-left-color:#1a56db; }
+  .ap-tab-icon { font-size:0.95rem; width:18px; text-align:center; }
+  .ap-sidebar-footer {
+    padding:14px 18px; border-top:1px solid rgba(255,255,255,0.07);
+  }
+  .ap-sidebar-user {
+    display:flex; align-items:center; gap:10px;
+  }
+  .ap-sidebar-avatar {
+    width:32px; height:32px; border-radius:8px; background:#1a56db;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:800; color:#fff;
+  }
+  .ap-sidebar-username { font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:700; color:#e2e8f0; }
+  .ap-sidebar-role { font-size:0.65rem; color:#64748b; }
 
-  .ap-body { padding: 20px; flex: 1; overflow-y: auto; }
+  /* Main content area */
+  .ap-content { flex:1; display:flex; flex-direction:column; overflow:hidden; background:#f8fafc; }
+  .ap-topbar {
+    background:#fff; padding:14px 22px; border-bottom:1px solid #e2e8f0;
+    display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+  }
+  .ap-topbar-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:#111; margin:0; }
+  .ap-topbar-date { font-size:0.75rem; color:#94a3b8; }
+  .ap-close {
+    background:#f1f5f9; border:none; color:#475569;
+    width:30px; height:30px; border-radius:7px; cursor:pointer;
+    font-size:1rem; display:flex; align-items:center; justify-content:center;
+  }
+  .ap-close:hover { background:#e2e8f0; }
 
-  .ap-tab-content { display: none; }
-  .ap-tab-content.active { display: block; }
+  /* Legacy ap-header hidden — sidebar replaces it */
+  .ap-header { display:none; }
+  /* Legacy ap-tabs hidden — sidebar nav replaces it */
+  .ap-tabs { display:none; }
+
+  .ap-body { padding:20px; flex:1; overflow-y:auto; }
+  .ap-tab-content { display:none; }
+  .ap-tab-content.active { display:block; }
+
+  /* Stats cards */
+  .ap-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:20px; }
+  .ap-stat {
+    background:#fff; border-radius:12px; padding:16px 18px;
+    border:1px solid #e2e8f0; display:flex; align-items:flex-start; gap:12px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.04);
+  }
+  .ap-stat-icon {
+    width:38px; height:38px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;
+  }
+  .ap-stat-val { font-family:'Syne',sans-serif; font-size:1.45rem; font-weight:800; color:#111; line-height:1; }
+  .ap-stat-lbl { font-size:0.72rem; color:#64748b; margin-top:3px; }
+
+  /* Revenue chart */
+  .ap-chart-card {
+    background:#fff; border-radius:12px; border:1px solid #e2e8f0;
+    padding:18px 20px; margin-bottom:20px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.04);
+  }
+  .ap-chart-title {
+    font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; color:#111; margin:0 0 14px;
+  }
 
   /* Toolbar */
-  .ap-toolbar {
-    display: flex; gap: 10px; margin-bottom: 16px;
-    flex-wrap: wrap; align-items: center;
-  }
+  .ap-toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
   .ap-search {
-    flex: 1; min-width: 160px; padding: 8px 12px;
-    border: 1.5px solid #e2e8f0; border-radius: 8px;
-    font-family:'DM Sans',sans-serif; font-size:0.85rem; outline: none;
+    flex:1; min-width:160px; padding:8px 12px;
+    border:1.5px solid #e2e8f0; border-radius:8px;
+    font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none;
   }
-  .ap-search:focus { border-color: #1a56db; }
+  .ap-search:focus { border-color:#1a56db; }
   .ap-btn {
-    padding: 8px 16px; border-radius: 8px; border: none;
+    padding:8px 16px; border-radius:8px; border:none;
     font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:700;
-    cursor: pointer; display:flex; align-items:center; gap:6px;
-    transition: all 0.18s; white-space: nowrap;
+    cursor:pointer; display:flex; align-items:center; gap:6px;
+    transition:all 0.18s; white-space:nowrap;
   }
   .ap-btn.blue  { background:#1a56db; color:#fff; }
   .ap-btn.blue:hover { background:#1648c0; }
@@ -1483,16 +1543,16 @@
   .ap-btn.gray:hover { background:#e2e8f0; }
 
   /* Products table */
-  .ap-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; }
-  .ap-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .ap-table-wrap { overflow-x:auto; border-radius:10px; border:1px solid #e2e8f0; }
+  .ap-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
   .ap-table th {
-    background: #f8fafc; padding: 10px 12px;
+    background:#f8fafc; padding:10px 12px;
     text-align:left; font-family:'Syne',sans-serif; font-weight:700;
-    color:#475569; border-bottom: 1px solid #e2e8f0; white-space:nowrap;
+    color:#475569; border-bottom:1px solid #e2e8f0; white-space:nowrap;
   }
-  .ap-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align:middle; }
-  .ap-table tr:last-child td { border-bottom: none; }
-  .ap-table tr:hover td { background: #f8fafc; }
+  .ap-table td { padding:10px 12px; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
+  .ap-table tr:last-child td { border-bottom:none; }
+  .ap-table tr:hover td { background:#f8fafc; }
   .ap-badge { padding:2px 8px; border-radius:20px; font-size:0.7rem; font-weight:700; }
   .ap-badge.sale { background:#fef3c7; color:#92400e; }
   .ap-badge.in  { background:#ecfdf5; color:#065f46; }
@@ -1501,22 +1561,16 @@
   .ap-img-none { width:38px; height:38px; border-radius:6px; background:#f1f5f9;
     display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:1.1rem; }
   .ap-row-actions { display:flex; gap:4px; }
-  .ap-icon-btn { width:30px;height:30px; border-radius:6px; border:none; cursor:pointer;
+  .ap-icon-btn { width:30px; height:30px; border-radius:6px; border:none; cursor:pointer;
     display:flex; align-items:center; justify-content:center; font-size:0.8rem; transition:all 0.15s; }
   .ap-icon-btn.edit { background:#eff6ff; color:#1a56db; }
   .ap-icon-btn.edit:hover { background:#dbeafe; }
   .ap-icon-btn.del  { background:#fef2f2; color:#b91c1c; }
   .ap-icon-btn.del:hover { background:#fee2e2; }
 
-  /* Stats cards */
-  .ap-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:20px; }
-  .ap-stat { background:#f8fafc; border-radius:10px; padding:14px 16px; border:1px solid #e2e8f0; }
-  .ap-stat-val { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:#111; }
-  .ap-stat-lbl { font-size:0.75rem; color:#64748b; margin-top:2px; }
-
   /* Product form */
   .ap-form { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .ap-form-full { grid-column: 1 / -1; }
+  .ap-form-full { grid-column:1/-1; }
   .ap-form label { display:block; font-size:0.75rem; font-weight:700;
     color:#475569; margin-bottom:4px; font-family:'Syne',sans-serif; }
   .ap-form input, .ap-form select, .ap-form textarea {
@@ -1531,9 +1585,9 @@
   .ap-order-card {
     border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px;
     margin-bottom:12px; display:flex; gap:16px; align-items:flex-start;
-    transition: box-shadow 0.18s;
+    transition:box-shadow 0.18s; background:#fff;
   }
-  .ap-order-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .ap-order-card:hover { box-shadow:0 2px 12px rgba(0,0,0,0.07); }
   .ap-order-id { font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; color:#111; }
   .ap-order-meta { font-size:0.75rem; color:#64748b; margin-top:2px; }
   .ap-order-total { font-family:'Syne',sans-serif; font-weight:800; color:#1a56db; font-size:1rem; margin-left:auto; }
@@ -1542,27 +1596,29 @@
   .ap-status-badge.confirmed { background:#dbeafe; color:#1e40af; }
   .ap-status-badge.delivered { background:#ecfdf5; color:#065f46; }
 
-  /* Image upload box */
+  /* Image upload */
   .ap-img-upload-box {
-    border: 2px dashed #cbd5e1; border-radius: 10px;
-    padding: 24px; text-align: center; cursor: pointer;
-    background: #f8fafc; transition: all 0.18s;
-    min-height: 90px; display: flex; align-items: center;
-    justify-content: center;
+    border:2px dashed #cbd5e1; border-radius:10px;
+    padding:24px; text-align:center; cursor:pointer;
+    background:#f8fafc; transition:all 0.18s;
+    min-height:90px; display:flex; align-items:center; justify-content:center;
   }
-  .ap-img-upload-box:hover { border-color: #1a56db; background: #eff6ff; }
-  .ap-img-upload-box.has-image { padding: 10px; border-style: solid; border-color: #1a56db; }
-
+  .ap-img-upload-box:hover { border-color:#1a56db; background:#eff6ff; }
+  .ap-img-upload-box.has-image { padding:10px; border-style:solid; border-color:#1a56db; }
 
   .ap-empty svg { margin-bottom:12px; }
   .ap-loading { text-align:center; padding:40px; color:#94a3b8; font-size:0.85rem; }
 
-  @media(max-width:640px) {
-    .ap-panel { border-radius:12px; }
+  @media(max-width:768px) {
+    .ap-panel { flex-direction:column; height:92vh; max-height:none; border-radius:12px; }
+    .ap-sidebar { width:100%; flex-direction:row; height:auto; }
+    .ap-sidebar-header, .ap-sidebar-footer, .ap-sidebar-section { display:none; }
+    .ap-sidebar-nav { display:flex; flex-direction:row; padding:0; overflow-x:auto; overflow-y:hidden; }
+    .ap-tab { border-left:none; border-bottom:3px solid transparent; padding:10px 14px; }
+    .ap-tab.active { border-left-color:transparent; border-bottom-color:#60a5fa; }
     .ap-form { grid-template-columns:1fr; }
     .ap-form-full { grid-column:1; }
     .ap-stats { grid-template-columns:1fr 1fr; }
-    .ap-tab { padding:10px 12px; font-size:0.75rem; }
   }
 
   /* ══════════════════════════════════════════════
@@ -2710,26 +2766,94 @@ function closeCart() {
 //  CHECKOUT FLOW
 // ══════════════════════════════════════════════════════
 let selectedPayment = '';
-let receiptPref = 'email';
+function showOrderReceipt(order) {
+  const date = new Date().toLocaleDateString('en-GH', {day:'numeric', month:'long', year:'numeric'});
+  const itemRows = order.items.map(i => `
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:0.85rem;color:#111;">${i.name}</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:0.85rem;color:#64748b;text-align:center;">×${i.qty}</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:0.85rem;color:#111;text-align:right;">GH₵${(i.price*i.qty).toLocaleString()}</td>
+    </tr>`).join('');
 
-function toggleReceiptPref(pref) {
-  receiptPref = pref;
-  const isEmail = pref === 'email';
+  const receiptHtml = `
+    <div id="receiptContent" style="font-family:'DM Sans',sans-serif;max-width:420px;width:100%;">
+      <div style="text-align:center;padding-bottom:16px;border-bottom:2px dashed #e2e8f0;margin-bottom:16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#0f172a;margin-bottom:2px;">Andani Electronics</div>
+        <div style="font-size:0.75rem;color:#94a3b8;">Official Purchase Receipt</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:0.8rem;">
+        <div><span style="color:#64748b;">Order Ref</span><br><strong style="color:#111;">${order.ref}</strong></div>
+        <div style="text-align:right;"><span style="color:#64748b;">Date</span><br><strong style="color:#111;">${date}</strong></div>
+      </div>
+      <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:0.8rem;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;color:#475569;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">Customer</div>
+        <div style="color:#111;margin-bottom:3px;"><strong>${order.name}</strong></div>
+        <div style="color:#64748b;">${order.phone}</div>
+        <div style="color:#64748b;">📍 ${order.location}</div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;color:#475569;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">Items Ordered</div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr>
+            <th style="font-size:0.72rem;color:#94a3b8;text-align:left;padding-bottom:6px;font-weight:600;">Item</th>
+            <th style="font-size:0.72rem;color:#94a3b8;text-align:center;padding-bottom:6px;font-weight:600;">Qty</th>
+            <th style="font-size:0.72rem;color:#94a3b8;text-align:right;padding-bottom:6px;font-weight:600;">Amount</th>
+          </tr></thead>
+          <tbody>${itemRows}</tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;background:#0f172a;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+        <span style="font-family:'Syne',sans-serif;font-weight:700;color:#94a3b8;font-size:0.82rem;">Total Paid</span>
+        <span style="font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1.1rem;">GH₵${order.total.toLocaleString()}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:16px;">
+        <span style="color:#64748b;">Payment</span>
+        <span style="color:#059669;font-weight:700;">${order.payMethod}</span>
+      </div>
+      <div style="text-align:center;font-size:0.72rem;color:#94a3b8;padding-top:12px;border-top:2px dashed #e2e8f0;">
+        Thank you for shopping with Andani Electronics!
+      </div>
+    </div>`;
 
-  document.getElementById('prefEmailBtn').style.borderColor = isEmail ? '#1a56db' : '#e2e8f0';
-  document.getElementById('prefEmailBtn').style.background  = isEmail ? '#eff6ff' : '';
-  document.getElementById('prefEmailDot').style.background  = isEmail ? '#1a56db' : '';
-  document.getElementById('prefEmailDot').style.border      = isEmail ? 'none' : '2px solid #cbd5e1';
-  document.querySelector('#prefEmailBtn span').style.color  = isEmail ? '#1a56db' : '#64748b';
+  const overlay = document.createElement('div');
+  overlay.id = 'receiptOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);overflow-y:auto;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:18px;max-width:460px;width:100%;padding:28px 24px;box-shadow:0 24px 80px rgba(0,0,0,0.22);animation:slideUp 0.25s ease;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">✅</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#0f172a;">Order Confirmed!</div>
+            <div style="font-size:0.72rem;color:#64748b;">Your receipt is ready</div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('receiptOverlay').remove()" style="background:#f1f5f9;border:none;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:1rem;color:#475569;">✕</button>
+      </div>
+      ${receiptHtml}
+      <div class="receipt-no-print" style="display:flex;gap:10px;margin-top:20px;">
+        <button onclick="printReceipt()" style="flex:1;padding:12px;background:#1a56db;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Receipt
+        </button>
+        <button onclick="document.getElementById('receiptOverlay').remove()" style="flex:1;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
 
-  document.getElementById('prefSmsBtn').style.borderColor   = !isEmail ? '#1a56db' : '#e2e8f0';
-  document.getElementById('prefSmsBtn').style.background    = !isEmail ? '#eff6ff' : '';
-  document.getElementById('prefSmsDot').style.background    = !isEmail ? '#1a56db' : '';
-  document.getElementById('prefSmsDot').style.border        = !isEmail ? 'none' : '2px solid #cbd5e1';
-  document.querySelector('#prefSmsBtn span').style.color    = !isEmail ? '#1a56db' : '#64748b';
-
-  document.getElementById('emailInputWrap').style.display   = isEmail ? 'block' : 'none';
-  document.getElementById('smsInputWrap').style.display     = !isEmail ? 'block' : 'none';
+function printReceipt() {
+  const content = document.getElementById('receiptContent').innerHTML;
+  const win = window.open('', '_blank', 'width=500,height=700');
+  win.document.write(`<!DOCTYPE html><html><head><title>Receipt — Andani Electronics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      body { font-family:'DM Sans',sans-serif; margin:0; padding:24px; background:#fff; }
+      @media print { body { padding:0; } }
+    </style></head><body>${content}
+    <script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script>
+    </body></html>`);
+  win.document.close();
 }
 
 function openCheckout() {
@@ -2859,8 +2983,7 @@ async function placeOrder() {
     btn.textContent = 'Loading…';
     btn.disabled = true;
 
-    const emailInput = document.getElementById('coEmail').value.trim();
-    const email = (receiptPref === 'email' && emailInput) ? emailInput : `${phone.replace(/\s/g,'')}@andanielectronics.com`;
+    const email = `${phone.replace(/\s/g,'')}@andanielectronics.com`;
     const ref = 'AE-' + Date.now();
 
     loadPaystackScript(function() {
@@ -2906,8 +3029,8 @@ async function placeOrder() {
 
           const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
           const msg = `🎉 *NEW PAID ORDER — Andani Electronics*\n\n✅ *Payment Confirmed via Paystack*\n📌 Ref: ${response.reference}\n\n👤 *Customer Details*\nName: ${name}\nPhone: ${phone}\nLocation: ${location}\n\n🛒 *Items Ordered*\n${itemLines}\n\n💰 *Total Paid: GH₵${total.toLocaleString()}*\n\n📅 Money will be in your account by next business day.\n\n_Please prepare order for delivery._`;
-          const waUrl = `https://wa.me/233546459999?text=${encodeURIComponent(msg)}`;
-          finishOrder(btn, waUrl);
+          const storeWaUrl = `https://wa.me/233546459999?text=${encodeURIComponent(msg)}`;
+          finishOrder(btn, storeWaUrl, { name, phone, location, items, total, ref: response.reference, payMethod: '✅ Paid via Paystack' });
         }
       });
       paystackOpen = true;
@@ -2929,36 +3052,19 @@ async function placeOrder() {
 
     const itemLines = items.map(i=>`• ${i.name} ×${i.qty} = GH₵${(i.price*i.qty).toLocaleString()}`).join('\n');
     const msg = `🛒 *NEW ORDER — Andani Electronics*\n\n💵 *Payment: Cash on Delivery*\n\n👤 *Customer Details*\nName: ${name}\nPhone: ${phone}\nLocation: ${location}\n\n🛒 *Items Ordered*\n${itemLines}\n\n💰 *Total: GH₵${total.toLocaleString()}*\n\n⚠️ _Payment to be collected on delivery. Please confirm with customer before dispatching._`;
-    const waUrl = `https://wa.me/233546459999?text=${encodeURIComponent(msg)}`;
-    finishOrder(btn, waUrl);
+    const storeWaUrl = `https://wa.me/233546459999?text=${encodeURIComponent(msg)}`;
+    finishOrder(btn, storeWaUrl, { name, phone, location, items, total, ref: 'COD-' + Date.now(), payMethod: '💵 Cash on Delivery' });
   }
 }
 
-function finishOrder(btn, waUrl) {
+function finishOrder(btn, storeWaUrl, orderData) {
   clearCart();
   closeCheckout();
   selectedPayment = '';
-  receiptPref = 'email';
-  ['coName','coPhone','coLocation','coNotes','coEmail'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  ['coName','coPhone','coLocation','coNotes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   if (btn) { btn.textContent = '✓ Place Order'; btn.disabled = false; btn.style.background='#059669'; }
-
-  // Show success modal with WhatsApp button instead of popup
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
-  overlay.innerHTML = `
-    <div style="background:#fff;border-radius:18px;max-width:380px;width:100%;padding:32px 24px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.2);animation:slideUp 0.25s ease;">
-      <div style="width:64px;height:64px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem;">🎉</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin:0 0 8px;color:#0f172a;">Order Placed!</h2>
-      <p style="font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#64748b;margin:0 0 24px;line-height:1.5;">Your payment was successful. Tap below to notify the store on WhatsApp and get delivery updates.</p>
-      ${waUrl ? `<a href="${waUrl}" target="_blank" onclick="this.closest('.success-overlay').remove()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:#25d366;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;text-decoration:none;box-sizing:border-box;margin-bottom:10px;">
-        <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Notify Store on WhatsApp
-      </a>` : ''}
-      <button onclick="this.closest('div[style]').parentElement.remove()" style="width:100%;padding:11px;background:#f1f5f9;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#475569;cursor:pointer;">Close</button>
-    </div>`;
-  overlay.classList.add('success-overlay');
-  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
+  if (storeWaUrl) window.open(storeWaUrl, '_blank');
+  if (orderData) showOrderReceipt(orderData);
 }
 
 
@@ -3053,7 +3159,7 @@ document.querySelectorAll('.page-btn').forEach(btn => {
 
 // ── ADMIN AUTH ──────────────────────────────────────────────────────
 const ADMIN_CREDS = {
-  admin: { username: 'andani_admin', password: 'Admin@Store1' }
+  admin: { username: 'andani_admin', password: localStorage.getItem('adminPassword') || 'Admin@Store1' }
 };
 
 let currentAdminRole = null;
@@ -3120,6 +3226,32 @@ function doAdminLogout() {
   btn.style.background = '';
   btn.style.borderColor = '';
   btn.style.color = '';
+}
+
+function apChangePassword() {
+  const curr = document.getElementById('apCurrPass').value;
+  const newP = document.getElementById('apNewPass').value;
+  const conf = document.getElementById('apConfirmPass').value;
+  const msg  = document.getElementById('apPassMsg');
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.style.display = 'block';
+    msg.style.background = ok ? '#dcfce7' : '#fee2e2';
+    msg.style.color       = ok ? '#166534' : '#991b1b';
+    msg.style.border      = '1px solid ' + (ok ? '#bbf7d0' : '#fecaca');
+  }
+
+  if (curr !== ADMIN_CREDS.admin.password) { showMsg('Current password is incorrect.', false); return; }
+  if (newP.length < 6)                      { showMsg('New password must be at least 6 characters.', false); return; }
+  if (newP !== conf)                        { showMsg('New passwords do not match.', false); return; }
+
+  ADMIN_CREDS.admin.password = newP;
+  localStorage.setItem('adminPassword', newP);
+  document.getElementById('apCurrPass').value = '';
+  document.getElementById('apNewPass').value  = '';
+  document.getElementById('apConfirmPass').value = '';
+  showMsg('Password updated successfully!', true);
 }
 
 
@@ -3201,35 +3333,93 @@ function apOverlayClick(e) {
 }
 
 // ── TABS ─────────────────────────────────────────────
+const apTabTitles = { overview:'Overview', products:'Products', orders:'Orders', promotions:'Promotions', settings:'Settings' };
+
 function apSwitchTab(tab, btn) {
   document.querySelectorAll('.ap-tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.ap-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('apTab-' + tab).classList.add('active');
   if (btn) btn.classList.add('active');
+  const titleEl = document.getElementById('apPanelTitle');
+  if (titleEl) titleEl.textContent = apTabTitles[tab] || tab;
   if (tab === 'products'   && !apLoaded.products)   apLoadProducts();
   if (tab === 'orders'     && !apLoaded.orders)     apLoadOrders();
   if (tab === 'promotions' && !apLoaded.promotions) apLoadPromos();
 }
 
 // ── OVERVIEW ─────────────────────────────────────────
+let apRevenueChartInstance = null;
+
 async function apLoadOverview() {
+  // Set topbar date
+  document.getElementById('apTopbarDate').textContent =
+    new Date().toLocaleDateString('en-GH',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+
   try {
-    const [prods, orders, promos] = await Promise.all([
+    const [prods, orders, promos, allOrds, chartOrds] = await Promise.all([
       sbAdmin('GET','products','','select=id'),
-      sbAdmin('GET','orders','','select=id,total,status,created_at,items&order=created_at.desc&limit=5'),
-      sbAdmin('GET','promotions','','select=id&active=eq.true')
+      sbAdmin('GET','orders','','select=id,total,status,created_at&order=created_at.desc&limit=5'),
+      sbAdmin('GET','promotions','','select=id&active=eq.true'),
+      sbAdmin('GET','orders','','select=total'),
+      sbAdmin('GET','orders','','select=total,created_at&order=created_at.asc')
     ]);
-    const allOrds = await sbAdmin('GET','orders','','select=total');
+
     document.getElementById('statProducts').textContent = prods.length;
     document.getElementById('statOrders').textContent   = allOrds.length;
     document.getElementById('statRevenue').textContent  = 'GH₵' + allOrds.reduce((s,o)=>s+Number(o.total),0).toLocaleString();
     document.getElementById('statPromos').textContent   = promos.length;
-    // Recent orders preview
+
+    // ── Revenue chart (last 14 days) ──────────────────
+    const days = 14;
+    const labels = [], data = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      labels.push(d.toLocaleDateString('en-GH',{day:'numeric',month:'short'}));
+      const dayStr = d.toISOString().slice(0,10);
+      const total = chartOrds
+        .filter(o => o.created_at && o.created_at.slice(0,10) === dayStr)
+        .reduce((s,o) => s + Number(o.total), 0);
+      data.push(total);
+    }
+    const ctx = document.getElementById('apRevenueChart').getContext('2d');
+    if (apRevenueChartInstance) apRevenueChartInstance.destroy();
+    apRevenueChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Revenue (GH₵)',
+          data,
+          borderColor: '#1a56db',
+          backgroundColor: 'rgba(26,86,219,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#1a56db',
+          tension: 0.35,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#94a3b8' } },
+          y: {
+            beginAtZero: true,
+            ticks: { font: { size: 11 }, color: '#94a3b8',
+              callback: v => 'GH₵' + v.toLocaleString() },
+            grid: { color: '#f1f5f9' }
+          }
+        }
+      }
+    });
+
+    // ── Recent orders ──────────────────────────────────
     const cont = document.getElementById('apRecentOrders');
     if (orders.length) {
-      cont.innerHTML = `<p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin:0 0 10px;">Recent Orders</p>` +
+      cont.innerHTML = `<p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin:0 0 10px;color:#111;">Recent Orders</p>` +
         orders.map(o => `
-          <div class="ap-order-card" style="margin-bottom:8px;">
+          <div class="ap-order-card">
             <div>
               <div class="ap-order-id">Order #${o.id}</div>
               <div class="ap-order-meta">${new Date(o.created_at).toLocaleDateString('en-GH',{day:'numeric',month:'short',year:'numeric'})}</div>
@@ -3628,43 +3818,83 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="ap-overlay" id="apOverlay" onclick="apOverlayClick(event)">
  <div class="ap-panel" id="apPanel">
 
-  <!-- Header -->
-  <div class="ap-header">
-    <svg width="20" height="20" fill="none" stroke="#60a5fa" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-    <div>
-      <p class="ap-header-sub">Andani Electronics</p>
-      <h2 id="apPanelTitle">Admin Dashboard</h2>
+  <!-- ── SIDEBAR ── -->
+  <div class="ap-sidebar">
+    <div class="ap-sidebar-header">
+      <p class="ap-sidebar-logo">
+        <svg width="16" height="16" fill="none" stroke="#60a5fa" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Andani<span>.</span>
+      </p>
+      <p class="ap-sidebar-sub">Admin Dashboard</p>
     </div>
-    <button class="ap-close" onclick="closeAdminPanel()">✕</button>
+    <nav class="ap-sidebar-nav">
+      <p class="ap-sidebar-section">Main</p>
+      <button class="ap-tab active" onclick="apSwitchTab('overview',this)"><span class="ap-tab-icon">📊</span> Overview</button>
+      <button class="ap-tab" onclick="apSwitchTab('products',this)"><span class="ap-tab-icon">📦</span> Products</button>
+      <button class="ap-tab" onclick="apSwitchTab('orders',this)"><span class="ap-tab-icon">📋</span> Orders</button>
+      <p class="ap-sidebar-section">Marketing</p>
+      <button class="ap-tab" onclick="apSwitchTab('promotions',this)"><span class="ap-tab-icon">🎯</span> Promotions</button>
+      <p class="ap-sidebar-section">Account</p>
+      <button class="ap-tab" onclick="apSwitchTab('settings',this)"><span class="ap-tab-icon">⚙️</span> Settings</button>
+    </nav>
+    <div class="ap-sidebar-footer">
+      <div class="ap-sidebar-user">
+        <div class="ap-sidebar-avatar">A</div>
+        <div>
+          <div class="ap-sidebar-username">andani_admin</div>
+          <div class="ap-sidebar-role">Administrator</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Tabs -->
-  <div class="ap-tabs">
-    <button class="ap-tab active" onclick="apSwitchTab('overview',this)">📊 Overview</button>
-    <button class="ap-tab" onclick="apSwitchTab('products',this)">📦 Products</button>
-    <button class="ap-tab" onclick="apSwitchTab('orders',this)">📋 Orders</button>
-    <button class="ap-tab" onclick="apSwitchTab('promotions',this)">🎯 Promotions</button>
-  </div>
+  <!-- ── MAIN CONTENT ── -->
+  <div class="ap-content">
+    <div class="ap-topbar">
+      <h2 class="ap-topbar-title" id="apPanelTitle">Overview</h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="ap-topbar-date" id="apTopbarDate"></span>
+        <button class="ap-close" onclick="closeAdminPanel()">✕</button>
+      </div>
+    </div>
 
   <div class="ap-body">
 
    <!-- ── OVERVIEW TAB ─────────────────────────── -->
    <div class="ap-tab-content active" id="apTab-overview">
     <div class="ap-stats" id="apStats">
-      <div class="ap-stat"><div class="ap-stat-val" id="statProducts">–</div><div class="ap-stat-lbl">Total Products</div></div>
-      <div class="ap-stat"><div class="ap-stat-val" id="statOrders">–</div><div class="ap-stat-lbl">Total Orders</div></div>
-      <div class="ap-stat"><div class="ap-stat-val" id="statRevenue">–</div><div class="ap-stat-lbl">Order Value (GH₵)</div></div>
-      <div class="ap-stat"><div class="ap-stat-val" id="statPromos">–</div><div class="ap-stat-lbl">Active Promos</div></div>
+      <div class="ap-stat">
+        <div class="ap-stat-icon" style="background:#eff6ff;">📦</div>
+        <div><div class="ap-stat-val" id="statProducts">–</div><div class="ap-stat-lbl">Total Products</div></div>
+      </div>
+      <div class="ap-stat">
+        <div class="ap-stat-icon" style="background:#ecfdf5;">📋</div>
+        <div><div class="ap-stat-val" id="statOrders">–</div><div class="ap-stat-lbl">Total Orders</div></div>
+      </div>
+      <div class="ap-stat">
+        <div class="ap-stat-icon" style="background:#fef3c7;">💰</div>
+        <div><div class="ap-stat-val" id="statRevenue">–</div><div class="ap-stat-lbl">Revenue (GH₵)</div></div>
+      </div>
+      <div class="ap-stat">
+        <div class="ap-stat-icon" style="background:#fce7f3;">🎯</div>
+        <div><div class="ap-stat-val" id="statPromos">–</div><div class="ap-stat-lbl">Active Promos</div></div>
+      </div>
     </div>
-    <div style="background:#f8fafc;border-radius:10px;padding:16px;border:1px solid #e2e8f0;">
-      <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin:0 0 10px;">Quick Actions</p>
+
+    <div class="ap-chart-card">
+      <p class="ap-chart-title">Revenue Trend — Last 14 Days</p>
+      <canvas id="apRevenueChart" height="120"></canvas>
+    </div>
+
+    <div style="background:#fff;border-radius:12px;padding:16px 18px;border:1px solid #e2e8f0;margin-bottom:20px;">
+      <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin:0 0 10px;color:#111;">Quick Actions</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;">
         <button class="ap-btn blue" onclick="apSwitchTab('products',document.querySelectorAll('.ap-tab')[1]);apShowAddForm()">+ Add Product</button>
         <button class="ap-btn gray" onclick="apSwitchTab('orders',document.querySelectorAll('.ap-tab')[2])">View Orders</button>
         <button class="ap-btn green" onclick="apSwitchTab('promotions',document.querySelectorAll('.ap-tab')[3])">Manage Deals</button>
       </div>
     </div>
-    <div id="apRecentOrders" style="margin-top:20px;"></div>
+    <div id="apRecentOrders"></div>
    </div>
 
    <!-- ── PRODUCTS TAB ─────────────────────────── -->
@@ -3805,7 +4035,31 @@ document.addEventListener('DOMContentLoaded', function() {
     <div id="apPromosList"><div class="ap-loading">Loading promotions…</div></div>
    </div>
 
+   <!-- ── SETTINGS TAB ─────────────────────────── -->
+   <div class="ap-tab-content" id="apTab-settings">
+    <div style="max-width:420px;">
+      <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin:0 0 18px;">Change Admin Password</p>
+      <div class="ap-form" style="display:grid;gap:12px;">
+        <div>
+          <label style="font-size:0.8rem;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Current Password</label>
+          <input type="password" id="apCurrPass" placeholder="Enter current password" style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:0.9rem;">
+        </div>
+        <div>
+          <label style="font-size:0.8rem;font-weight:600;color:#374151;display:block;margin-bottom:4px;">New Password</label>
+          <input type="password" id="apNewPass" placeholder="Enter new password" style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:0.9rem;">
+        </div>
+        <div>
+          <label style="font-size:0.8rem;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Confirm New Password</label>
+          <input type="password" id="apConfirmPass" placeholder="Confirm new password" style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:0.9rem;">
+        </div>
+        <div id="apPassMsg" style="display:none;padding:10px 12px;border-radius:8px;font-size:0.85rem;font-weight:500;"></div>
+        <button class="ap-btn blue" onclick="apChangePassword()" style="width:fit-content;">Update Password</button>
+      </div>
+    </div>
+   </div>
+
   </div><!-- ap-body -->
+  </div><!-- ap-content -->
  </div><!-- ap-panel -->
 </div><!-- ap-overlay -->
 
@@ -3868,25 +4122,6 @@ document.addEventListener('DOMContentLoaded', function() {
       <div id="coStep1">
         <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;margin:0 0 16px;">Your Details</p>
         <div style="display:flex;flex-direction:column;gap:12px;">
-          <div>
-            <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:6px;">Receipt Preference</label>
-            <div style="display:flex;gap:8px;margin-bottom:8px;">
-              <label onclick="toggleReceiptPref('email')" id="prefEmailBtn" style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:2px solid #1a56db;border-radius:8px;cursor:pointer;background:#eff6ff;">
-                <div id="prefEmailDot" style="width:14px;height:14px;border-radius:50%;background:#1a56db;flex-shrink:0;"></div>
-                <span style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:#1a56db;">📧 Email</span>
-              </label>
-              <label onclick="toggleReceiptPref('sms')" id="prefSmsBtn" style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;">
-                <div id="prefSmsDot" style="width:14px;height:14px;border-radius:50%;border:2px solid #cbd5e1;flex-shrink:0;"></div>
-                <span style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:#64748b;">📱 SMS</span>
-              </label>
-            </div>
-            <div id="emailInputWrap">
-              <input id="coEmail" placeholder="e.g. amina@gmail.com" type="email" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
-            </div>
-            <div id="smsInputWrap" style="display:none;">
-              <p style="margin:0;font-size:0.75rem;color:#64748b;font-family:'DM Sans',sans-serif;">Receipt will be sent as SMS to your phone number above.</p>
-            </div>
-          </div>
           <div>
             <label style="display:block;font-size:0.75rem;font-weight:700;color:#475569;font-family:'Syne',sans-serif;margin-bottom:4px;">Full Name *</label>
             <input id="coName" placeholder="e.g. Amina Issahaku" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;box-sizing:border-box;outline:none;" onfocus="this.style.borderColor='#1a56db'" onblur="this.style.borderColor='#e2e8f0'">
