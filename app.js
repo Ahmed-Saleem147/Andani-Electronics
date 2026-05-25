@@ -197,6 +197,9 @@ const grid = document.getElementById('productGrid');
 
 let currentFilter = 'all';
 let currentPreFiltered = null;
+let currentPage = 1;
+const ITEMS_PER_PAGE = 12;
+let _lastFiltered = [];
 
 function sortProducts(arr) {
   const sort = document.getElementById('sortSelect')?.value || 'featured';
@@ -225,6 +228,7 @@ function setView(mode) {
 function renderGrid(filter, preFiltered) {
   currentFilter = filter || 'all';
   currentPreFiltered = preFiltered || null;
+  currentPage = 1;
 
   let filtered;
   if (preFiltered) {
@@ -237,10 +241,17 @@ function renderGrid(filter, preFiltered) {
     filtered = allProducts.filter(p => p.category === filter);
   }
 
-  filtered = sortProducts(filtered);
+  _lastFiltered = sortProducts(filtered);
+  _renderPage(1);
+}
 
-  grid.innerHTML = '';
-  if (filtered.length === 0) {
+function _renderPage(page) {
+  currentPage = page;
+  const total = _lastFiltered.length;
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const pageItems = _lastFiltered.slice(start, start + ITEMS_PER_PAGE);
+
+  if (total === 0) {
     grid.innerHTML = `
       <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">
         <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 16px;display:block;opacity:0.4"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
@@ -248,12 +259,43 @@ function renderGrid(filter, preFiltered) {
         <p style="font-size:0.9rem;">Try a different filter or check back soon.</p>
       </div>`;
   } else {
-    filtered.forEach(p => { grid.innerHTML += makeCard(p); });
+    grid.innerHTML = pageItems.map(p => makeCard(p)).join('');
   }
 
-  // Update result count
   const rc = document.querySelector('.result-count');
-  if (rc) rc.innerHTML = `Showing <strong>${filtered.length}</strong> products`;
+  if (rc) rc.innerHTML = `Showing <strong>${Math.min(start + ITEMS_PER_PAGE, total)}</strong> of <strong>${total}</strong> products`;
+
+  _renderPagination(total, page);
+}
+
+function _renderPagination(total, page) {
+  const bar = document.getElementById('paginationBar');
+  if (!bar) return;
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  if (totalPages <= 1) { bar.innerHTML = ''; return; }
+
+  const prev = page > 1;
+  const next = page < totalPages;
+  let html = `<button class="page-btn" onclick="goToPage(${page - 1})" ${prev ? '' : 'disabled'}>‹</button>`;
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 2 && i <= page + 2)) {
+      html += `<button class="page-btn ${i === page ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    } else if (i === page - 3 || i === page + 3) {
+      html += `<span class="page-ellipsis">…</span>`;
+    }
+  }
+
+  html += `<button class="page-btn" onclick="goToPage(${page + 1})" ${next ? '' : 'disabled'}>›</button>`;
+  bar.innerHTML = html;
+}
+
+function goToPage(page) {
+  const totalPages = Math.ceil(_lastFiltered.length / ITEMS_PER_PAGE);
+  if (page < 1 || page > totalPages) return;
+  _renderPage(page);
+  const gridTop = document.getElementById('productGrid');
+  if (gridTop) gridTop.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Initial render — load from Supabase
@@ -267,14 +309,10 @@ function doSearch(q) {
     p.brand.toLowerCase().includes(q) ||
     p.specs.some(s => s.toLowerCase().includes(q))
   );
-  grid.innerHTML = '';
   const appSection = document.querySelector('.appliances-section');
   if (appSection) appSection.style.display = 'none';
-  if (results.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);font-family:'Syne',sans-serif;">No products found for "<strong>${q}</strong>"</div>`;
-  } else {
-    results.forEach(p => { grid.innerHTML += makeCard(p); });
-  }
+  _lastFiltered = results;
+  _renderPage(1);
 }
 
 document.querySelector('.search-bar input').addEventListener('input', function() {
@@ -894,13 +932,7 @@ function applySidebarFilters() {
 
 
 
-// ── Pagination ───────────────────────────────────────────
-document.querySelectorAll('.page-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-    if(this.textContent !== '‹' && this.textContent !== '›') this.classList.add('active');
-  });
-});
+// ── Pagination handled by _renderPagination / goToPage ───
 
 // ── ADMIN AUTH ──────────────────────────────────────────────────────
 const ADMIN_CREDS = {
