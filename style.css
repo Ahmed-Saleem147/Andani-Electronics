@@ -1156,6 +1156,13 @@
     filter: grayscale(15%);
   }
 
+  .brand-logo-bg {
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    max-width: 130px;
+  }
+
   .brand-logo:hover { opacity: 1; filter: grayscale(0%); }
 
   .brand-text-logo {
