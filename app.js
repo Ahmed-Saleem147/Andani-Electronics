@@ -8,7 +8,7 @@ function makeCard(p) {
   const discountPct = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
   const noImg = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23f3f5fb%22 width=%22200%22 height=%22150%22/><text fill=%22%236b7280%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2214%22>No Image</text></svg>`;
   return `
-  <div class="product-card" data-category="${p.category}">
+  <div class="product-card" data-category="${p.category}" onclick="openProductModal(${p.id}, event)">
     <div class="product-image-wrap">
       ${p.badge === 'sale' ? '<span class="sale-label">Sale!</span>' : ''}
       <img src="${p.image}" alt="${p.name}" onerror="this.src='${noImg}'">
@@ -23,9 +23,71 @@ function makeCard(p) {
       </div>
       <div class="product-specs">${p.specs.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>
       <p class="in-stock-label">✓ In stock</p>
-      <button class="add-to-cart-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+      <button class="add-to-cart-btn" onclick="addToCart(${p.id});event.stopPropagation()">Add to Cart</button>
     </div>
   </div>`;
+}
+
+// ── PRODUCT DETAIL MODAL ──────────────────────────────────
+let _pdProducts = [];
+let _pdIndex = 0;
+
+function openProductModal(id, e) {
+  if (e && e.target.classList.contains('add-to-cart-btn')) return;
+  _pdProducts = allProducts.length ? allProducts : [];
+  _pdIndex = _pdProducts.findIndex(p => p.id === id);
+  if (_pdIndex === -1) return;
+  _pdFill(_pdProducts[_pdIndex]);
+  document.getElementById('productModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function _pdFill(p) {
+  const discountPct = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+  const noImg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect fill='%23f3f5fb' width='400' height='300'/><text fill='%236b7280' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-size='16'>No Image</text></svg>`;
+
+  document.getElementById('pdImg').src = p.image || noImg;
+  document.getElementById('pdImg').alt = p.name;
+  document.getElementById('pdName').textContent = p.name;
+  document.getElementById('pdPrice').textContent = `GH₵ ${p.price.toLocaleString()}`;
+
+  const oldEl = document.getElementById('pdOldPrice');
+  if (p.oldPrice) { oldEl.textContent = `GH₵ ${p.oldPrice.toLocaleString()}`; oldEl.style.display = ''; }
+  else { oldEl.style.display = 'none'; }
+
+  const saleEl = document.getElementById('pdSaleLabel');
+  saleEl.style.display = p.badge === 'sale' ? '' : 'none';
+
+  const discEl = document.getElementById('pdDiscount');
+  if (discountPct) { discEl.textContent = `-${discountPct}%`; discEl.style.display = ''; }
+  else { discEl.style.display = 'none'; }
+
+  document.getElementById('pdSpecsList').innerHTML = p.specs.map(s => `<li>${s}</li>`).join('');
+
+  document.getElementById('pdAddBtn').onclick = () => {
+    const qty = parseInt(document.getElementById('pdQty').value) || 1;
+    for (let i = 0; i < qty; i++) addToCart(p.id);
+  };
+
+  document.getElementById('pdChatBtn').href =
+    `https://wa.me/233546459999?text=${encodeURIComponent('Hi, I am interested in: ' + p.name + ' (GH₵ ' + p.price.toLocaleString() + ')')}`;
+
+  document.getElementById('pdMeta').innerHTML =
+    `Categories: <span>${p.category.replace(/_/g,' ')}</span> &nbsp; Brand: <span>${p.brand}</span>`;
+}
+
+function navigateModal(dir) {
+  _pdIndex = (_pdIndex + dir + _pdProducts.length) % _pdProducts.length;
+  _pdFill(_pdProducts[_pdIndex]);
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function pdOverlayClick(e) {
+  if (e.target.id === 'productModal') closeProductModal();
 }
 
 // ── All Products ─────────────────────────────────────────
@@ -1443,10 +1505,13 @@ function apCloseConfirm() {
   apConfirmCallback = null;
 }
 
-// Close confirm on overlay click
+// Close confirm on overlay click + Escape key closes modals
 document.addEventListener('DOMContentLoaded', function() {
   const confirmOverlay = document.getElementById('apConfirmOverlay');
   if (confirmOverlay) confirmOverlay.addEventListener('click', function(e) {
     if (e.target === this) apCloseConfirm();
   });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProductModal();
 });

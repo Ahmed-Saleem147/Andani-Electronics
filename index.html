@@ -1062,5 +1062,44 @@
 <!-- ── TOAST NOTIFICATIONS ───────────────────────────── -->
 <div id="apToastContainer" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:20001;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;"></div>
 
+<!-- ── PRODUCT DETAIL MODAL ───────────────────────────── -->
+<div id="productModal" class="pd-overlay" onclick="pdOverlayClick(event)">
+  <div class="pd-modal">
+    <button class="pd-close" onclick="closeProductModal()" aria-label="Close">&times;</button>
+    <div class="pd-image-col">
+      <img id="pdImg" src="" alt="">
+    </div>
+    <div class="pd-detail-col">
+      <div class="pd-top-row">
+        <span id="pdSaleLabel" class="pd-sale-label" style="display:none">Sale!</span>
+        <div class="pd-nav-btns">
+          <button onclick="navigateModal(-1)" aria-label="Previous">&#8592;</button>
+          <button onclick="navigateModal(1)" aria-label="Next">&#8594;</button>
+        </div>
+      </div>
+      <h2 id="pdName" class="pd-name"></h2>
+      <div class="pd-price-row">
+        <span id="pdOldPrice" class="pd-price-old" style="display:none"></span>
+        <span id="pdPrice" class="pd-price-current"></span>
+      </div>
+      <div id="pdDiscount" class="pd-discount-badge" style="display:none"></div>
+      <div class="pd-features">
+        <p class="pd-features-title">KEY FEATURES</p>
+        <ul id="pdSpecsList"></ul>
+      </div>
+      <hr class="pd-divider">
+      <p class="pd-in-stock">&#10003; In stock</p>
+      <div class="pd-cart-row">
+        <div class="pd-qty-wrap">
+          <input type="number" id="pdQty" value="1" min="1">
+        </div>
+        <button class="pd-add-btn" id="pdAddBtn">Add to cart</button>
+      </div>
+      <a id="pdChatBtn" class="pd-chat-btn" target="_blank">Chat with sales</a>
+      <p class="pd-meta" id="pdMeta"></p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
