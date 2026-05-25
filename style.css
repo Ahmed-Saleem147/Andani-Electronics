@@ -1114,6 +1114,67 @@
     .whatsapp-btn { bottom: 24px; right: 24px; width: 56px; height: 56px; }
   }
 
+  /* ─── BRANDS STRIP ─── */
+  .brands-strip {
+    background: #fff;
+    border-top: 1px solid #e8edf5;
+    border-bottom: 1px solid #e8edf5;
+    padding: 26px 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .brands-marquee {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  .brands-track {
+    display: flex;
+    align-items: center;
+    gap: 72px;
+    width: max-content;
+    animation: scrollBrands 22s linear infinite;
+  }
+
+  .brands-track:hover { animation-play-state: paused; }
+
+  @keyframes scrollBrands {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .brand-logo {
+    height: 38px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    opacity: 0.6;
+    flex-shrink: 0;
+    transition: opacity 0.22s;
+    filter: grayscale(15%);
+  }
+
+  .brand-logo:hover { opacity: 1; filter: grayscale(0%); }
+
+  .brand-text-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #374151;
+    opacity: 0.6;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1;
+    transition: opacity 0.22s;
+    cursor: default;
+    user-select: none;
+  }
+
+  .brand-text-logo:hover { opacity: 1; }
+
   /* ─── SERVICES BANNER ─── */
   .services-banner {
     background: linear-gradient(135deg, #0f2d6b 0%, #1a56db 100%);
