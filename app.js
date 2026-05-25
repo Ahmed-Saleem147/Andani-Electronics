@@ -4,32 +4,26 @@ function stars(n) {
   for(let i=1;i<=5;i++) s += `<span class="${i<=n?'star':'star-empty'}">★</span>`;
   return s;
 }
-function mkBadge(b) {
-  if(!b) return '';
-  return `<span class="badge badge-${b}">${b}</span>`;
-}
 function makeCard(p) {
-  const old = p.oldPrice ? `<span class="price-old">GH₵ ${p.oldPrice.toLocaleString()}</span>` : '';
+  const discountPct = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+  const noImg = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23f3f5fb%22 width=%22200%22 height=%22150%22/><text fill=%22%236b7280%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2214%22>No Image</text></svg>`;
   return `
   <div class="product-card" data-category="${p.category}">
     <div class="product-image-wrap">
-      ${mkBadge(p.badge)}
-      <img src="${p.image}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22><rect fill=%22%23f3f5fb%22 width=%22200%22 height=%22150%22/><text fill=%22%236b7280%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2214%22>No Image</text></svg>'">
-      <div class="wishlist-btn">
-        <svg width="14" height="14" fill="none" stroke="#ff3e6c" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      </div>
-      <div class="quick-add" onclick="addToCart(${p.id})">+ Add to Cart</div>
+      ${p.badge === 'sale' ? '<span class="sale-label">Sale!</span>' : ''}
+      <img src="${p.image}" alt="${p.name}" onerror="this.src='${noImg}'">
+      ${discountPct ? `<span class="discount-badge">-${discountPct}%</span>` : ''}
     </div>
     <div class="product-info">
-      <div class="product-brand">${p.brand}</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-specs">${p.specs.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>
-      <div class="product-footer">
-        <div class="price-wrap">
-          <span class="price-current">GH₵ ${p.price.toLocaleString()}</span>${old}
-        </div>
-        <div class="stars">${stars(p.rating)}<span class="rating-count">(${p.reviews})</span></div>
+      <p class="product-brand">${p.brand}</p>
+      <h3 class="product-name">${p.name}</h3>
+      <div class="price-block">
+        ${p.oldPrice ? `<span class="price-old">GH₵ ${p.oldPrice.toLocaleString()}</span>` : ''}
+        <span class="price-current">GH₵ ${p.price.toLocaleString()}</span>
       </div>
+      <div class="product-specs">${p.specs.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>
+      <p class="in-stock-label">✓ In stock</p>
+      <button class="add-to-cart-btn" onclick="addToCart(${p.id})">Add to Cart</button>
     </div>
   </div>`;
 }
