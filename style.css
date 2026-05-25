@@ -642,44 +642,26 @@
 
   /* ─── CATEGORY SLIDESHOW ─── */
   .cat-slider-wrapper {
-    position: relative;
+    overflow: hidden;
+    width: 100%;
     margin-bottom: 40px;
   }
 
   .cat-slider-track {
     display: flex;
     gap: 36px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    padding: 16px 12px;
+    width: max-content;
+    animation: scrollCats 32s linear infinite;
+    padding: 16px 0;
     align-items: flex-start;
   }
 
-  .cat-slider-track::-webkit-scrollbar { display: none; }
+  .cat-slider-track:hover { animation-play-state: paused; }
 
-  .cat-slider-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 38px;
-    height: 38px;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.14);
-    transition: all 0.2s;
+  @keyframes scrollCats {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
   }
-
-  .cat-slider-btn:hover { background: var(--accent); border-color: var(--accent); }
-  .cat-slider-btn:hover svg { stroke: #fff; }
-  .cat-slider-btn.prev { left: -19px; }
-  .cat-slider-btn.next { right: -19px; }
 
   .appliance-cat {
     display: flex;
@@ -1036,10 +1018,9 @@
     .view-all-btn { font-size: 0.75rem; padding: 7px 12px; }
     .appliance-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
-    /* Category slider — smaller icons, hide nav buttons, clip overflow */
-    .cat-slider-wrapper { overflow: hidden; margin: 0 -4px; }
-    .cat-slider-btn { display: none; }
-    .cat-slider-track { gap: 14px; padding: 10px 4px; }
+    /* Category slider — smaller icons on mobile */
+    .cat-slider-wrapper { margin: 0; }
+    .cat-slider-track { gap: 14px; padding: 10px 0; }
     .appliance-cat { width: 72px; font-size: 0.68rem; gap: 7px; }
     .appliance-icon { width: 64px; height: 64px; }
     .appliance-icon svg { width: 32px; height: 32px; }
