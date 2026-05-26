@@ -868,7 +868,7 @@ let sidebarPriceMin = null, sidebarPriceMax = null;
 function buildSidebar() {
   // Count per category
   const catCounts = {};
-  const brandCounts = { Samsung: 0, TCL: 0, NASCO: 0, Hybrid: 0, Ailyons: 0 };
+  const brandCounts = { Hybrid: 0, Ailyons: 0 };
   allProducts.forEach(p => {
     catCounts[p.category] = (catCounts[p.category]||0) + 1;
     brandCounts[p.brand]  = (brandCounts[p.brand]||0) + 1;
