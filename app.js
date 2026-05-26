@@ -387,7 +387,7 @@ document.querySelectorAll('.drawer-nav a').forEach(link => {
   const heroP = document.querySelector('.collection-hero p');
   const heroMap = {
     all:        { h1: 'TVs, Microwaves & <span>Home Appliances</span>', p: "Northern Ghana's go-to store for quality electronics and home appliances at great prices." },
-    tvs:        { h1: 'Televisions',                                    p: 'Smart TVs, 4K displays and more — from top brands like LG, Samsung & TCL.' },
+    tvs:        { h1: 'Televisions',                                    p: 'Smart TVs, 4K displays and more — from top brands like Samsung, TCL & NASCO.' },
     appliances: { h1: 'Home <span>Appliances</span>',                   p: 'Fridges, washing machines, ACs, microwaves and more for your home.' },
     laptops:    { h1: 'Laptops & <span>Computers</span>',               p: 'Coming soon — premium laptops for work, school and beyond.' },
     phones:     { h1: 'Smartphones & <span>Phones</span>',              p: 'Coming soon — the latest smartphones at great prices.' },
@@ -868,7 +868,7 @@ let sidebarPriceMin = null, sidebarPriceMax = null;
 function buildSidebar() {
   // Count per category
   const catCounts = {};
-  const brandCounts = {};
+  const brandCounts = { Samsung: 0, TCL: 0, NASCO: 0, Hybrid: 0, Ailyons: 0 };
   allProducts.forEach(p => {
     catCounts[p.category] = (catCounts[p.category]||0) + 1;
     brandCounts[p.brand]  = (brandCounts[p.brand]||0) + 1;
